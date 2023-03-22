@@ -2,6 +2,7 @@ package dev.ArkNLA.pixelTiles;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -47,13 +48,6 @@ public class FrameSetup implements ActionListener {
 	
 	FrameSetup() {
 		
-		// Frame properties
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(frameX, frameY, frameW, frameH);
-		frame.setTitle("Pixel Tiles by ArkNLA.dev");
-		frame.setUndecorated(true);
-		
 		// Title bar pane setup
 		
 		paneTitleBar.setLayout(new BorderLayout());
@@ -90,8 +84,22 @@ public class FrameSetup implements ActionListener {
 		
 		frame.add(paneSizeSelect, BorderLayout.SOUTH);
 		
-		// Frame wrap-up		
+		// Frame properties
+
+		// Full screen option, not used
+		//frame.setBounds(0,0,screenWidth, screenHeight);
+		//frame.setUndecorated(true);		
+		//frame.setResizable(false);
+		//buttonExit.setVisible(true);
+		  
+		 
 		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(frameX, frameY, frameW, frameH);
+		frame.setTitle("Pixel Tiles by ArkNLA.dev");
+		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
+		buttonExit.setVisible(false);
+		frame.setResizable(true);
 		frame.setVisible(true);
 
 	}
