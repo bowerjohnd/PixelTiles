@@ -1,6 +1,5 @@
 package dev.ArkNLA.pixelTiles;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,78 +12,74 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	
 	private static final long serialVersionUID = 1L;
 	
-	JLabel labelSize1, labelSize2, labelSize3, labelSize4, labelSizeCustom;
-	JTextField textFieldCustomWidth, textFieldCustomHeight;
-	JRadioButton radioSize1, radioSize2, radioSize3, radioSize4, radioSizeCustom;
+	JLabel labelGrid1, labelGrid2, labelGrid3, labelGridCustom;
+	JTextField textFieldCustomRows, textFieldCustomCols;
+	JRadioButton radioGrid1, radioGrid2, radioGrid3, radioGridCustom;
 	ButtonGroup radioGroup = new ButtonGroup();
 	
-	private int sizeX, sizeY;
+	private int rows, cols;
 	
-	int size1value = 8;
-	int size2value = 24;
+	int size1value = 10;
+	int size2value = 25;
 	int size3value = 50;
-	int size4value = 250;
 	
 	PanelSizeSelect() {
 		
+		labelGrid1 = new JLabel(size1value + "x" + size1value);
+		labelGrid2 = new JLabel(size2value + "x" + size2value);
+		labelGrid3 = new JLabel(size3value + "x" + size3value);
+		
+		labelGridCustom = new JLabel("Custom:");
+		textFieldCustomRows = new JTextField(3);
+		textFieldCustomCols = new JTextField(3);
+		textFieldCustomRows.addKeyListener(this);
+		textFieldCustomCols.addKeyListener(this);
+		textFieldCustomRows.setEnabled(false);
+		textFieldCustomCols.setEnabled(false);	
+
+		
+		radioGrid1 = new JRadioButton();
+		radioGrid2 = new JRadioButton();
+		radioGrid3 = new JRadioButton();
+		radioGridCustom = new JRadioButton();
+
+		radioGrid1.addActionListener(this);
+		radioGrid2.addActionListener(this);
+		radioGrid3.addActionListener(this);
+		radioGridCustom.addActionListener(this);
+		
+		radioGrid1.setHorizontalAlignment(SwingConstants.RIGHT);
+		radioGrid2.setHorizontalAlignment(SwingConstants.RIGHT);
+		radioGrid3.setHorizontalAlignment(SwingConstants.RIGHT);
+		radioGridCustom.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		radioGrid1.setSelected(true);
+		rows = size1value;
+		cols = size1value;
+		PixelTilesMain.userGridLineRows = rows;
+		PixelTilesMain.userGridLineCols = cols;
+		textFieldCustomRows.setText(Integer.toString(size1value));
+		textFieldCustomCols.setText(Integer.toString(size1value));
+		
+		
 		//setBackground(Color.LIGHT_GRAY);
+		setLayout(new GridLayout(1,10,2,2));
 		
-		labelSize1 = new JLabel(size1value + "x" + size1value);
-		labelSize2 = new JLabel(size2value + "x" + size2value);
-		labelSize3 = new JLabel(size3value + "x" + size3value);
-		labelSize4 = new JLabel(size4value + "x" + size4value);
+		radioGroup.add(radioGrid1);
+		radioGroup.add(radioGrid2);
+		radioGroup.add(radioGrid3);
+		radioGroup.add(radioGridCustom);
 		
-		labelSizeCustom = new JLabel("Custom:");
-		textFieldCustomWidth = new JTextField(3);
-		textFieldCustomHeight = new JTextField(3);
-		textFieldCustomWidth.setEnabled(false);
-		textFieldCustomHeight.setEnabled(false);	
-
-		
-		radioSize1 = new JRadioButton();
-		radioSize2 = new JRadioButton();
-		radioSize3 = new JRadioButton();
-		radioSize4 = new JRadioButton();
-		radioSizeCustom = new JRadioButton();
-
-		radioSize1.addActionListener(this);
-		radioSize2.addActionListener(this);
-		radioSize3.addActionListener(this);
-		radioSize4.addActionListener(this);
-		radioSizeCustom.addActionListener(this);
-		
-		radioSize1.setHorizontalAlignment(SwingConstants.RIGHT);
-		radioSize2.setHorizontalAlignment(SwingConstants.RIGHT);
-		radioSize3.setHorizontalAlignment(SwingConstants.RIGHT);
-		radioSize4.setHorizontalAlignment(SwingConstants.RIGHT);
-		radioSizeCustom.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		radioSize3.setSelected(true);
-		sizeX = size3value;
-		sizeY = size3value;
-		textFieldCustomWidth.setText(Integer.toString(size3value));
-		textFieldCustomHeight.setText(Integer.toString(size3value));
-		
-		setLayout(new GridLayout(1,12));
-		
-		radioGroup.add(radioSize1);
-		radioGroup.add(radioSize2);
-		radioGroup.add(radioSize3);
-		radioGroup.add(radioSize4);
-		radioGroup.add(radioSizeCustom);
-		
-		add(radioSize1);
-		add(labelSize1);
-		add(radioSize2);
-		add(labelSize2);
-		add(radioSize3);
-		add(labelSize3);
-		add(radioSize4);
-		add(labelSize4);
-		add(radioSizeCustom);
-		add(labelSizeCustom);
-		add(textFieldCustomWidth);
-		add(textFieldCustomHeight);
+		add(radioGrid1, 0, 0);
+		add(labelGrid1, 0, 1);
+		add(radioGrid2, 0, 2);
+		add(labelGrid2, 0, 3);
+		add(radioGrid3, 0, 4);
+		add(labelGrid3, 0, 5);
+		add(radioGridCustom, 0, 6);
+		add(labelGridCustom, 0, 7);
+		add(textFieldCustomRows, 0, 8);
+		add(textFieldCustomCols, 0, 9);
 		
 	}
 
@@ -92,46 +87,41 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		
-		if (source == radioSize1) {
-			sizeX = size1value;
-			sizeY = size1value;
-			textFieldCustomWidth.setEnabled(false);
-			textFieldCustomHeight.setEnabled(false);	
-			textFieldCustomWidth.setText(Integer.toString(size1value));
-			textFieldCustomHeight.setText(Integer.toString(size1value));	
+		if (source == radioGrid1) {
+			rows = size1value;
+			cols = size1value;
+			textFieldCustomRows.setEnabled(false);
+			textFieldCustomCols.setEnabled(false);	
+			textFieldCustomRows.setText(Integer.toString(size1value));
+			textFieldCustomCols.setText(Integer.toString(size1value));	
 		}
 
-		if (source == radioSize2) {
-			sizeX = size2value;
-			sizeY = size2value;
-			textFieldCustomWidth.setEnabled(false);
-			textFieldCustomHeight.setEnabled(false);	
-			textFieldCustomWidth.setText(Integer.toString(size2value));
-			textFieldCustomHeight.setText(Integer.toString(size2value));	
+		if (source == radioGrid2) {
+			rows = size2value;
+			cols = size2value;
+			textFieldCustomRows.setEnabled(false);
+			textFieldCustomCols.setEnabled(false);	
+			textFieldCustomRows.setText(Integer.toString(size2value));
+			textFieldCustomCols.setText(Integer.toString(size2value));	
 		}
 
-		if (source == radioSize3) {
-			sizeX = size3value;
-			sizeY = size3value;
-			textFieldCustomWidth.setEnabled(false);
-			textFieldCustomHeight.setEnabled(false);	
-			textFieldCustomWidth.setText(Integer.toString(size3value));
-			textFieldCustomHeight.setText(Integer.toString(size3value));	
+		if (source == radioGrid3) {
+			rows = size3value;
+			cols = size3value;
+			textFieldCustomRows.setEnabled(false);
+			textFieldCustomCols.setEnabled(false);	
+			textFieldCustomRows.setText(Integer.toString(size3value));
+			textFieldCustomCols.setText(Integer.toString(size3value));	
 		}
 
-		if (source == radioSize4) {
-			sizeX = size4value;
-			sizeY = size4value;
-			textFieldCustomWidth.setEnabled(false);
-			textFieldCustomHeight.setEnabled(false);	
-			textFieldCustomWidth.setText(Integer.toString(size4value));
-			textFieldCustomHeight.setText(Integer.toString(size4value));	
+		if (source == radioGridCustom) {
+			textFieldCustomRows.setEnabled(true);
+			textFieldCustomCols.setEnabled(true);	
 		}
 
-		if (source == radioSizeCustom) {
-			textFieldCustomWidth.setEnabled(true);
-			textFieldCustomHeight.setEnabled(true);	
-		}
+		PixelTilesMain.userGridLineRows = rows;
+		PixelTilesMain.userGridLineCols = cols;
+    	PixelTilesMain.paneDraw.repaint();
 
 	}
 
@@ -150,35 +140,39 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
-		if (radioSizeCustom.isSelected()) {
+		if (radioGridCustom.isSelected()) {
 			try {
-				int w = Integer.parseInt(textFieldCustomWidth.getText());	
-			    int h = Integer.parseInt(textFieldCustomHeight.getText());
+				int w = Integer.parseInt(textFieldCustomRows.getText());	
+			    int h = Integer.parseInt(textFieldCustomCols.getText());
 			    
-			    if (w > 1) {
-			    	sizeX = w;
+			    if (w > 0) {
+			    	rows = w;
+			    	PixelTilesMain.userGridLineRows = rows;
+			    	PixelTilesMain.paneDraw.repaint();
 			    }
 			    
-			    if (h > 1) {
-			    	sizeY = h;
+			    if (h > 0) {
+			    	cols = h;
+			    	PixelTilesMain.userGridLineCols = cols;
+			    	PixelTilesMain.paneDraw.repaint();
 			    }
-			    
+			    			    
 			} catch(Exception ex) {
-				if (!(sizeX > 1)) {
-					sizeX = 1;
+				if (!(rows > 0)) {
+					rows = 1;
 				}
-				if (!(sizeY > 1)) {
-					sizeY = 1;
+				if (!(cols > 0)) {
+					cols = 1;
 				}
 			}
 		    
 		}
 	}  
 
-	public int getSizeX() {
-		return sizeX;
+	public int getGridRows() {
+		return rows;
 	}
-	public int getSizeY() {
-		return sizeY;
+	public int getGridCols() {
+		return cols;
 	}
 }

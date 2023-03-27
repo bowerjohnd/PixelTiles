@@ -3,7 +3,6 @@ package dev.ArkNLA.pixelTiles;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class FrameSetup implements ActionListener {
+public class PixelTilesMain implements ActionListener {
 
 	// Screen properties
 	
@@ -34,9 +33,9 @@ public class FrameSetup implements ActionListener {
 	
 	JPanel paneTitleBar = new JPanel();							// Border layout NORTH
 	PanelColorSelect paneColorSelect = new PanelColorSelect();	// Border layout WEST
-	PanelDraw paneDraw = new PanelDraw();						// Border layout CENTER
+	static PanelDraw paneDraw = new PanelDraw();				// Border layout CENTER
 	JPanel paneTools = new JPanel();							// Border layout EAST
-	JPanel panePreview = new JPanel();									// paneTools layout NORTH
+	static JPanel panePreview = new JPanel();							// paneTools layout NORTH
 	PanelDrawTools paneDrawTools = new PanelDrawTools();				// paneTools layout CENTER
 	PanelSave paneSave = new PanelSave();								// paneTools layout SOUTH
 	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();		// Border layout SOUTH
@@ -46,8 +45,20 @@ public class FrameSetup implements ActionListener {
 	JLabel labelTitle = new JLabel("Pixel Tiles by ArkNLA.dev");
 	JButton buttonExit = new JButton("Exit");
 	
-	FrameSetup() {
+	// User selections
+	
+	public static int userGridLineRows = 1;
+	public static int userGridLineCols = 1;
+	public static Color userColor;
+	
+	PixelTilesMain() {
+
+		// User selections default
 		
+		userGridLineRows = paneSizeSelect.getGridRows();
+		userGridLineCols = paneSizeSelect.getGridCols();
+		userColor = Color.black;
+
 		// Title bar pane setup
 		
 		paneTitleBar.setLayout(new BorderLayout());
@@ -102,6 +113,11 @@ public class FrameSetup implements ActionListener {
 		frame.setResizable(true);
 		frame.setVisible(true);
 
+	}
+	
+	public static void main(String[] args) {
+		
+		PixelTilesMain start = new PixelTilesMain();
 	}
 
 	@Override
