@@ -78,7 +78,6 @@ public class PixelTilesMain implements ActionListener {
 		frame.add(paneColorSelect, BorderLayout.WEST);
 		
 		// Draw pane setup
-		
 		frame.add(paneDraw, BorderLayout.CENTER);
 		
 		// Tools pane setup

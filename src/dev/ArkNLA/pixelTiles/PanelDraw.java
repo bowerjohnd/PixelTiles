@@ -21,7 +21,7 @@ public class PanelDraw extends JPanel implements MouseListener{
 	
 	Border border = new LineBorder(Color.black, 2);
 	
-	int pX, pY, line, stepX, stepY;
+	private int pX, pY, line, stepX, stepY, gridSize;
 	
 	PanelDraw() {
 		
@@ -30,6 +30,12 @@ public class PanelDraw extends JPanel implements MouseListener{
 				
 		pX = this.getWidth();
 		pY = this.getHeight();
+		
+		if (pX > pY) {
+			gridSize = pY;
+		} else {
+			gridSize = pX;
+		}
 
 		add(userGridX);
 		add(userGridY);
@@ -41,35 +47,54 @@ public class PanelDraw extends JPanel implements MouseListener{
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		// Get size of Panel
-		pX = this.getSize().width;
-		pY = this.getSize().height;
+		int gridSizeCorrectedX = 0;
+		int gridSizeCorrectedY = 0;
+		int uglRows = PixelTilesMain.userGridLineRows;
+		int uglCols = PixelTilesMain.userGridLineCols;
 		
-		// Divide panel size by rows and cols
-		stepX = (int)pY/PixelTilesMain.userGridLineRows;
-		stepY = (int)pX/PixelTilesMain.userGridLineCols;
+		// Get size of Panel and use smaller to create square grid, corrected for mod (%) remainder
+		pX = this.getWidth();
+		pY = this.getHeight();
 		
-		// Correct panel size to evenly divide by rows cols
-		pX -= pX%stepY;
-		pY -= pY%stepX;
-		
+		if (pX > pY) {
+			
+			// Height is smaller than width
+			gridSize = pY;
+			stepX = (int)gridSize/uglRows;
+			stepY = (int)gridSize/uglCols;
+
+			gridSizeCorrectedX = gridSize - gridSize%uglCols;
+			gridSizeCorrectedY = gridSize - gridSize%uglRows;
+			
+		} else {
+			
+			// Width is smaller than height
+			gridSize = pX;
+			stepX = (int)gridSize/uglRows;
+			stepY = (int)gridSize/uglCols;
+
+			gridSizeCorrectedX = gridSize - gridSize%uglCols;
+			gridSizeCorrectedY = gridSize - gridSize%uglRows;
+
+		}
+						
 		// Draw rows
 		line = stepX;
-		for(int i = 0; i < PixelTilesMain.userGridLineRows; i++) {
-			g.drawLine(0, line, pX, line);
+		for(int i = 0; i < uglRows; i++) {
+			g.drawLine(0, line, gridSizeCorrectedX, line);
 			line += stepX;
 		}
 
 		// Draw Cols
 		line = stepY;
-		for(int i = 0; i < PixelTilesMain.userGridLineCols; i++) {
-			g.drawLine(line, 0, line, pY);
+		for(int i = 0; i < uglCols; i++) {
+			g.drawLine(line, 0, line, gridSizeCorrectedY);
 			line += stepY;
 		}
 		
 		// DEVELOPMENT: Show sizes
-		userGridX.setText("Rows: " + stepX + "/" + pY);
-		userGridY.setText("Cols: " + stepY + "/" + pX);
+		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/" + pX);
+		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/" + pY);
 
 	}
 	

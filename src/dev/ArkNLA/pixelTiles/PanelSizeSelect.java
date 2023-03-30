@@ -12,7 +12,7 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	
 	private static final long serialVersionUID = 1L;
 	
-	JLabel labelGrid1, labelGrid2, labelGrid3, labelGridCustom;
+	JLabel labelGrid1, labelGrid2, labelGrid3, labelGridCustom, labelRows, labelCols;
 	JTextField textFieldCustomRows, textFieldCustomCols;
 	JRadioButton radioGrid1, radioGrid2, radioGrid3, radioGridCustom;
 	ButtonGroup radioGroup = new ButtonGroup();
@@ -36,7 +36,10 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 		textFieldCustomCols.addKeyListener(this);
 		textFieldCustomRows.setEnabled(false);
 		textFieldCustomCols.setEnabled(false);	
-
+		labelRows = new JLabel("Rows:");
+		labelCols = new JLabel("Cols:");
+		labelRows.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelCols.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		radioGrid1 = new JRadioButton();
 		radioGrid2 = new JRadioButton();
@@ -63,7 +66,7 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 		
 		
 		//setBackground(Color.LIGHT_GRAY);
-		setLayout(new GridLayout(1,10,2,2));
+		setLayout(new GridLayout(1,12,2,2));
 		
 		radioGroup.add(radioGrid1);
 		radioGroup.add(radioGrid2);
@@ -78,8 +81,10 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 		add(labelGrid3, 0, 5);
 		add(radioGridCustom, 0, 6);
 		add(labelGridCustom, 0, 7);
-		add(textFieldCustomRows, 0, 8);
-		add(textFieldCustomCols, 0, 9);
+		add(labelRows, 0, 8);
+		add(textFieldCustomRows, 0, 9);
+		add(labelCols, 0, 10);
+		add(textFieldCustomCols, 0, 11);
 		
 	}
 
@@ -146,13 +151,27 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 			    int h = Integer.parseInt(textFieldCustomCols.getText());
 			    
 			    if (w > 0) {
-			    	rows = w;
+			    	
+			    	if (w < 100) {
+			    		rows = w;
+			    	} else {
+			    		rows = 100;
+						textFieldCustomRows.setText(Integer.toString(rows));
+			    	}
+			    	
 			    	PixelTilesMain.userGridLineRows = rows;
 			    	PixelTilesMain.paneDraw.repaint();
 			    }
 			    
 			    if (h > 0) {
-			    	cols = h;
+			    	
+			    	if (h < 100) {
+			    		cols = h;
+			    	} else {
+			    		cols = 100;
+						textFieldCustomCols.setText(Integer.toString(cols));	
+			    	}
+
 			    	PixelTilesMain.userGridLineCols = cols;
 			    	PixelTilesMain.paneDraw.repaint();
 			    }
