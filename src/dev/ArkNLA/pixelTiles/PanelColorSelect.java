@@ -1,18 +1,16 @@
 package dev.ArkNLA.pixelTiles;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class PanelColorSelect extends JPanel implements MouseListener, ActionListener, KeyListener, AdjustmentListener{
+public class PanelColorSelect extends JPanel implements ActionListener, KeyListener, ChangeListener{
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,88 +28,273 @@ public class PanelColorSelect extends JPanel implements MouseListener, ActionLis
 	// THIS generic
 	
 	private int pY;
-	private GridBagLayout gridBag = new GridBagLayout();
-	private GridBagConstraints gbc = new GridBagConstraints();
+	private int intRed = 255;		//
+	private int intBlue = 255;		// Default color: white
+	private int intGreen = 255;		//
+	private int intOpacity = 255;	//
 	
 	// THIS border layout NORTH
 	
 	private JPanel paneNorth = new JPanel();
 	private JPanel paneColorSelected = new JPanel();
-	private JLabel labelRed, labelGreen, labelBlue, labelTransp, labelHEX;
-	private JTextField textRed, textGreen, textBlue, textTransp, textHEX;
-	private JScrollBar scrollRed, scrollGreen, scrollBlue, scrollTransp, scrollDarkness;
+	private JPanel paneColorSelectedText = new JPanel();
+	private JPanel paneRGB = new JPanel();
+	private JPanel panePresetColors = new JPanel();
+	private JLabel labelRed, labelGreen, labelBlue, labelAll, labelOpacity, labelRGB, labelHEX;
+	private JTextField textRed, textGreen, textBlue, textOpacity, textRGB, textHEX;
+	private JSlider slideRed, slideGreen, slideBlue, slideAll, slideOpacity;
+	private JButton buttonColorSelected, buttonRGBcopy, buttonHEXcopy,
+					butRed, butGreen, butBlue, butYellow, butOrange, butBlack,
+					butGray, butWhite;
 	
 	// THIS border layout CENTER
 	
 	private JScrollPane paneCenter = new JScrollPane();
-	
+
 	
 	
 	PanelColorSelect() {
 		
 		// THIS panel
 		pY = this.getHeight();
-		setBounds(0,0,200,pY);
+		setBounds(0,0,100,pY);
 		setLayout(new BorderLayout());
+
+
+		/*
+		 * 		NORTH PANEL begins
+		 */
 		
-		// NORTH panel setup
-		paneNorth.setLayout(gridBag);
+		paneNorth.setLayout(new BorderLayout());
+		paneNorth.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		// Color selected view
-		paneColorSelected.setBackground(Color.WHITE);
-		gbc.gridy = 0;
-		gbc.gridwidth = 3;
-		gbc.ipady = 100;
-		paneNorth.add(paneColorSelected, gbc);
+		paneColorSelected.setLayout(new BorderLayout());
+		paneColorSelectedText.setLayout(new GridBagLayout());
+		paneRGB.setLayout(new GridBagLayout());
 		
-		gbc.gridwidth = 0; gbc.ipady = 0;
+		GridBagConstraints c = new GridBagConstraints();
+		
+		/*
+		 * 		Color selected pane north pane NORTH
+		 */
+
+		buttonColorSelected = new JButton();
+		buttonColorSelected.setPreferredSize(new Dimension(100,100));
+
+		paneColorSelected.add(buttonColorSelected, BorderLayout.NORTH);
+		
+		labelRGB = new JLabel("RGBA:");
+		labelHEX = new JLabel("HEX:");
+		textRGB = new JTextField(10);
+		textRGB.setEditable(false);
+		textHEX = new JTextField(10);
+		textHEX.setEditable(false);
+		buttonRGBcopy = new JButton("Copy");
+		buttonRGBcopy.addActionListener(this);
+		buttonHEXcopy = new JButton("Copy");
+		buttonHEXcopy.addActionListener(this);
+		
+		c.gridy = 0;
+		c.gridx = 0;
+		paneColorSelectedText.add(labelRGB, c);
+		c.gridy = 0;
+		c.gridx = 1;
+		paneColorSelectedText.add(textRGB, c);
+		c.gridy = 0;
+		c.gridx = 2;
+		paneColorSelectedText.add(buttonRGBcopy, c);
+		c.gridy = 1;
+		c.gridx = 0;
+		paneColorSelectedText.add(labelHEX, c);
+		c.gridy = 1;
+		c.gridx = 1;
+		paneColorSelectedText.add(textHEX, c);
+		c.gridy = 1;
+		c.gridx = 2;
+		paneColorSelectedText.add(buttonHEXcopy, c);
+		
+		paneColorSelected.add(paneColorSelectedText, BorderLayout.SOUTH);
+		
+		/*
+		 * 		Preset color buttons north pane CENTER
+		 */
+		
+		panePresetColors.setLayout(new GridLayout());
+		
+		butRed = new JButton();
+		butGreen = new JButton(); 
+		butBlue = new JButton();
+		butYellow = new JButton(); 
+		butOrange = new JButton(); 
+		butBlack = new JButton();
+		butGray = new JButton();
+		butWhite = new JButton();
+
+		butRed.setPreferredSize(new Dimension(20, 20));
+		butGreen.setPreferredSize(new Dimension(20, 20)); 
+		butBlue.setPreferredSize(new Dimension(20, 20));
+		butYellow.setPreferredSize(new Dimension(20, 20));
+		butOrange.setPreferredSize(new Dimension(20, 20));
+		butBlack.setPreferredSize(new Dimension(20, 20));
+		butGray.setPreferredSize(new Dimension(20, 20));
+		butWhite.setPreferredSize(new Dimension(20, 20));
+
+		butRed.addActionListener(this);
+		butGreen.addActionListener(this); 
+		butBlue.addActionListener(this);
+		butYellow.addActionListener(this);
+		butOrange.addActionListener(this);
+		butBlack.addActionListener(this);
+		butGray.addActionListener(this);
+		butWhite.addActionListener(this);
+
+		butRed.setBackground(Color.RED);
+		butGreen.setBackground(Color.GREEN); 
+		butBlue.setBackground(Color.BLUE);
+		butYellow.setBackground(Color.YELLOW);
+		butOrange.setBackground(Color.ORANGE);
+		butBlack.setBackground(Color.BLACK);
+		butGray.setBackground(Color.GRAY);
+		butWhite.setBackground(Color.WHITE);
+		
+		panePresetColors.add(butRed);
+		panePresetColors.add(butGreen);
+		panePresetColors.add(butBlue);
+		panePresetColors.add(butYellow);
+		panePresetColors.add(butOrange);
+		panePresetColors.add(butBlack);
+		panePresetColors.add(butGray);
+		panePresetColors.add(butWhite);
+
+		/*
+		 * 		Color adjustments north pane SOUTH
+		 */
 		
 		// Red adjustments
-		labelRed = new JLabel("R:");
+		labelRed = new JLabel("Red:");
 		textRed = new JTextField(3);
 		textRed.addKeyListener(this);
-		scrollRed = new JScrollBar(JScrollBar.HORIZONTAL,250,1,0,255);
-		scrollRed.addAdjustmentListener(this);
+		slideRed = new JSlider(0, 255, 1);
+		slideRed.addChangeListener(this);
 		
-		gbc.gridy = 1; gbc.gridx = 0;
-		paneNorth.add(labelRed, gbc);
-		gbc.gridy = 1; gbc.gridx = 1;
-		paneNorth.add(textRed, gbc);
-		gbc.gridy = 1; gbc.gridx = 2;
-		paneNorth.add(scrollRed, gbc);
-
+		c.gridy = 0;
+		c.gridx = 0;
+		paneRGB.add(labelRed, c);
+		c.gridy = 0;
+		c.gridx = 1;
+		paneRGB.add(textRed, c);
+		c.gridy = 0;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		paneRGB.add(slideRed, c);
+		
 		// Green adjustments
-		labelGreen = new JLabel("G:");
+		labelGreen = new JLabel("Green:");
 		textGreen = new JTextField(3);
 		textGreen.addKeyListener(this);
-		scrollGreen = new JScrollBar(JScrollBar.HORIZONTAL,250,1,0,255);
-		scrollGreen.addAdjustmentListener(this);
+		slideGreen = new JSlider(0, 255, 1);
+		slideGreen.addChangeListener(this);
 		
-		gbc.gridy = 2; gbc.gridx = 0;
-		paneNorth.add(labelGreen, gbc);
-		gbc.gridy = 2; gbc.gridx = 1;
-		paneNorth.add(textGreen, gbc);
-		gbc.gridy = 2; gbc.gridx = 2;
-		paneNorth.add(scrollGreen, gbc);
-
+		c.gridy = 1;
+		c.gridx = 0;
+		paneRGB.add(labelGreen, c);
+		c.gridy = 1;
+		c.gridx = 1;
+		paneRGB.add(textGreen, c);
+		c.gridy = 1;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		paneRGB.add(slideGreen, c);
+		
 		// Blue adjustments
-		labelBlue = new JLabel("B:");
+		labelBlue = new JLabel("Blue:");
 		textBlue = new JTextField(3);
 		textBlue.addKeyListener(this);
-		scrollBlue = new JScrollBar(JScrollBar.HORIZONTAL,250,1,0,255);
-		scrollBlue.addAdjustmentListener(this);
+		slideBlue = new JSlider(0, 255, 1);
+		slideBlue.addChangeListener(this);
 		
-		gbc.gridy = 3; gbc.gridx = 0;
-		paneNorth.add(labelBlue, gbc);
-		gbc.gridy = 3; gbc.gridx = 1;
-		paneNorth.add(textBlue, gbc);
-		gbc.gridy = 3; gbc.gridx = 2;
-		paneNorth.add(scrollBlue, gbc);
+		c.gridy = 2;
+		c.gridx = 0;
+		paneRGB.add(labelBlue, c);
+		c.gridy = 2;
+		c.gridx = 1;
+		paneRGB.add(textBlue, c);
+		c.gridy = 2;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		paneRGB.add(slideBlue, c);
 		
-		// THIS panel add other panels
+		// All adjustment
+		labelAll = new JLabel("All:");
+		labelAll.setHorizontalAlignment(SwingConstants.RIGHT);
+		slideAll = new JSlider(0,255,1);
+		slideAll.addChangeListener(this);
+		
+		c.gridy = 3;
+		c.gridx = 0;
+		c.gridwidth = 2;
+		paneRGB.add(labelAll, c);
+		c.gridy = 3;
+		c.gridx = 2;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;	
+		paneRGB.add(slideAll, c);
+		
+		
+		// Transparency adjustment		
+		labelOpacity = new JLabel("O:");
+		textOpacity = new JTextField(3);
+		textOpacity.addKeyListener(this);
+		slideOpacity = new JSlider(0, 255, 1);
+		slideOpacity.addChangeListener(this);
+		
+		c.gridy = 4;
+		c.gridx = 0;
+		paneRGB.add(labelOpacity, c);
+		c.gridy = 4;
+		c.gridx = 1;
+		paneRGB.add(textOpacity, c);
+		c.gridy = 4;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		paneRGB.add(slideOpacity, c);
+		
+		// Add panels to paneNORTH 
+		
+		paneNorth.add(paneColorSelected, BorderLayout.NORTH);
+		paneNorth.add(panePresetColors, BorderLayout.CENTER);
+		paneNorth.add(paneRGB, BorderLayout.SOUTH);
+		
+		// THIS add north panel
 		
 		add(paneNorth, BorderLayout.NORTH);
 		
+		/*
+		 * 		NORTH PANEL ends
+		 * 
+		 * 		CENTER PANEL begins
+		 */
+		
+		//		TODO: saved colors added to list: Color - edit - delete
+		
+		/*
+		 * 		CENTER PANEL ends
+		 * 
+		 * 		WRAP UP
+		 */
+		
+		slideRed.setValue(intRed);
+		slideGreen.setValue(intGreen);
+		slideBlue.setValue(intBlue);
+		slideOpacity.setValue(intOpacity);
+		
+		textRed.setText(String.valueOf(intRed));
+		textGreen.setText(String.valueOf(intGreen));
+		textBlue.setText(String.valueOf(intBlue));
+		textOpacity.setText(String.valueOf(intOpacity));
+		
+		setText();
+		setDrawColor();
 	}
 
 	@Override
@@ -128,49 +311,268 @@ public class PanelColorSelect extends JPanel implements MouseListener, ActionLis
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
+		Object source = e.getSource();
+		
+		/*
+		 * 		RGB and O manual input
+		 * 			- adjust textRGB, textHEX, sliderRed
+		 */
+		
+		if (source == textRed) {
+			try {
+				int red = Integer.parseInt(textRed.getText());	
+			    
+				if (red >= 0 && red <= 255) {
+					intRed = red;
+				}
+			    			    
+			} catch(Exception ex) {
+				if (!(intRed >= 0 && intRed <= 255)) {
+					intRed = 0;
+					textRed.setText("0");
+				}
+			}
+		}
+
+		if (source == textGreen) {
+			try {
+				int green = Integer.parseInt(textGreen.getText());	
+			    
+				if (green >= 0 && green <= 255) {
+					intGreen = green;
+				}
+			    			    
+			} catch(Exception ex) {
+				if (!(intGreen >= 0 && intGreen <= 255)) {
+					intGreen = 0;
+					textGreen.setText("0");
+				}
+			}
+		}
+
+		if (source == textBlue) {
+			try {
+				int blue = Integer.parseInt(textBlue.getText());	
+			    
+				if (blue >= 0 && blue <= 255) {
+					intBlue = blue;
+				}
+			    			    
+			} catch(Exception ex) {
+				if (!(intBlue >= 0 && intBlue <= 255)) {
+					intBlue = 0;
+					textBlue.setText("0");
+				}
+			}
+		}
+
+		if (source == textOpacity) {
+			try {
+				int opacity = Integer.parseInt(textOpacity.getText());	
+			    
+				if (opacity >= 0 && opacity <= 255) {
+					intOpacity = opacity;
+				}
+			    			    
+			} catch(Exception ex) {
+				if (!(intOpacity >= 0 && intOpacity <= 255)) {
+					intOpacity = 255;
+					textOpacity.setText("255");
+				}
+			}
+		}
+
+		setText();
+		setDrawColor();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+
+		Object source = e.getSource();
+		
+		/*
+		 * 		NORTH PANEL begin
+		 */
+		
+		// Copy color selected to system clipboard
+
+		if (source == buttonColorSelected || source == buttonRGBcopy) {
+			StringSelection selection = new StringSelection(textRGB.getText());
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selection, selection);
+		}
+		
+		if (source == buttonHEXcopy) {
+			StringSelection selection = new StringSelection(textHEX.getText());
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selection, selection);
+		}
+		
+		// User selected preset color
+		
+		if (source == butRed) {
+			intRed = Color.red.getRed();
+			intGreen = Color.red.getGreen();
+			intBlue = Color.red.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butGreen) {
+			intRed = Color.green.getRed();
+			intGreen = Color.green.getGreen();
+			intBlue = Color.green.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butBlue) {
+			intRed = Color.blue.getRed();
+			intGreen = Color.blue.getGreen();
+			intBlue = Color.blue.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butYellow) {
+			intRed = Color.yellow.getRed();
+			intGreen = Color.yellow.getGreen();
+			intBlue = Color.yellow.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butOrange) {
+			intRed = Color.orange.getRed();
+			intGreen = Color.orange.getGreen();
+			intBlue = Color.orange.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butBlack) {
+			intRed = Color.black.getRed();
+			intGreen = Color.black.getGreen();
+			intBlue = Color.black.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butGray) {
+			intRed = Color.gray.getRed();
+			intGreen = Color.gray.getGreen();
+			intBlue = Color.gray.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		if (source == butWhite) {
+			intRed = Color.white.getRed();
+			intGreen = Color.white.getGreen();
+			intBlue = Color.white.getBlue();
+			
+			setSlidersAndTexts();
+			setText();
+			setDrawColor();
+		}
+		
+		/*
+		 * 		NORTH PANEL end
+		 * 
+		 * 		CENTER PANEL begin
+		 */
 		
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void stateChanged(ChangeEvent e) {
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		Object source = e.getSource();
 		
-	}
+		// Color adjustment sliders
+		
+		if (source == slideRed) {
+			
+			int v = slideRed.getValue();
+			
+			intRed = v;			
+			textRed.setText(String.valueOf(v));
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		}
 		
-	}
+		if (source == slideGreen) {
+		
+			int v = slideGreen.getValue();
+			
+			intGreen = v;			
+			textGreen.setText(String.valueOf(v));
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+		}
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+		if (source == slideBlue) {
+			
+			int v = slideBlue.getValue();
+			
+			intBlue = v;			
+			textBlue.setText(String.valueOf(v));
+		}
 
-	@Override
-	public void adjustmentValueChanged(AdjustmentEvent e) {
-		// TODO Auto-generated method stub
+		if (source == slideOpacity) {
+			
+			int v = slideOpacity.getValue();
+			
+			intOpacity = v;			
+			textOpacity.setText(String.valueOf(v));
+		}
+
+		if (source == slideAll) {
+
+			int v = slideAll.getValue();
+			
+			intRed = v;
+			intGreen = v;
+			intBlue = v;
+			
+			slideRed.setValue(v);
+			slideGreen.setValue(v);
+			slideBlue.setValue(v);
+			
+			textRed.setText(String.valueOf(v));
+			textGreen.setText(String.valueOf(v));
+			textBlue.setText(String.valueOf(v));
+		}
 		
+		setText();
+		setDrawColor();
+	}
+	
+	public void setDrawColor() {
+		buttonColorSelected.setBackground(new Color(intRed, intGreen, intBlue, intOpacity));
+		PixelTilesMain.userColor = new Color(intRed, intGreen, intBlue, intOpacity);
+	}
+	
+	public void setText() {
+		textRGB.setText(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
+		textHEX.setText("#" + Integer.toHexString(intRed) + Integer.toHexString(intGreen) 
+							+ Integer.toHexString(intBlue) + Integer.toHexString(intOpacity));
+	}
+	
+	public void setSlidersAndTexts() {
+		slideRed.setValue(intRed);
+		slideGreen.setValue(intGreen);
+		slideBlue.setValue(intBlue);
+		
+		textRed.setText(String.valueOf(intRed));
+		textGreen.setText(String.valueOf(intGreen));
+		textBlue.setText(String.valueOf(intBlue));
 	}
 }
