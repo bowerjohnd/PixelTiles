@@ -29,21 +29,23 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	
 	private int pY;
 	private int intRed = 255;		//
-	private int intBlue = 255;		// Default color: white
-	private int intGreen = 255;		//
+	private int intGreen = 255;		// Default color: white
+	private int intBlue = 255;		//
 	private int intOpacity = 255;	//
+	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
 	
 	// THIS border layout NORTH
 	
 	private JPanel paneNorth = new JPanel();
 	private JPanel paneColorSelected = new JPanel();
+	private JPanel paneColorSelectedPreview; 			// initialized in constructor
 	private JPanel paneColorSelectedText = new JPanel();
 	private JPanel paneRGB = new JPanel();
 	private JPanel panePresetColors = new JPanel();
 	private JLabel labelRed, labelGreen, labelBlue, labelAll, labelOpacity, labelRGB, labelHEX;
 	private JTextField textRed, textGreen, textBlue, textOpacity, textRGB, textHEX;
 	private JSlider slideRed, slideGreen, slideBlue, slideAll, slideOpacity;
-	private JButton buttonColorSelected, buttonRGBcopy, buttonHEXcopy,
+	private JButton buttonRGBcopy, buttonHEXcopy,
 					butRed, butGreen, butBlue, butYellow, butOrange, butBlack,
 					butGray, butWhite;
 	
@@ -78,10 +80,27 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		 * 		Color selected pane north pane NORTH
 		 */
 
-		buttonColorSelected = new JButton();
-		buttonColorSelected.setPreferredSize(new Dimension(100,100));
+		//paneColorSelectedPreview.setPreferredSize(new Dimension(100,100));
 
-		paneColorSelected.add(buttonColorSelected, BorderLayout.NORTH);
+		paneColorSelectedPreview = new JPanel()
+		{
+			// Swing doesn't support opacity on backgrounds
+			//		- Anomalies occur with only setBackground on pane
+			// 		- Get background color and paint a rectangle over it with opacity
+			//		* Fix source: https://tips4java.wordpress.com/2009/05/31/backgrounds-with-transparency/
+			
+		    protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		paneColorSelectedPreview.setPreferredSize(new Dimension(100,100));
+		paneColorSelectedPreview.setOpaque(false);
+		paneColorSelectedPreview.setBackground(colorSelected);
+
+		paneColorSelected.add(paneColorSelectedPreview, BorderLayout.NORTH);
 		
 		labelRGB = new JLabel("RGBA:");
 		labelHEX = new JLabel("HEX:");
@@ -398,7 +417,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		
 		// Copy color selected to system clipboard
 
-		if (source == buttonColorSelected || source == buttonRGBcopy) {
+		if (source == buttonRGBcopy) {
 			StringSelection selection = new StringSelection(textRGB.getText());
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			clipboard.setContents(selection, selection);
@@ -556,8 +575,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	}
 	
 	public void setDrawColor() {
-		buttonColorSelected.setBackground(new Color(intRed, intGreen, intBlue, intOpacity));
-		PixelTilesMain.userColor = new Color(intRed, intGreen, intBlue, intOpacity);
+		paneColorSelectedPreview.setBackground(new Color(intRed, intGreen, intBlue, intOpacity));
+		colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
+		PixelTilesMain.userColor = colorSelected;
 	}
 	
 	public void setText() {

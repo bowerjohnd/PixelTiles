@@ -1,9 +1,13 @@
 package dev.ArkNLA.pixelTiles;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,9 +16,28 @@ import javax.swing.border.LineBorder;
 
 import dev.ArkNLA.pixelTiles.PixelTilesMain;
 
-public class PanelDraw extends JPanel implements MouseListener{
+public class PanelDraw extends JPanel implements MouseListener, MouseMotionListener{
 
 	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * 		Tracking mouse in panel
+	 */
+	
+	Boolean mousePressed = false;
+	Dimension mouseLoc;
+	int mouseX, mouseY;
+	
+
+	/*
+	 * 		Image drawn by user
+	 */
+	
+	Image offScreenImage = null;
+	
+	/*
+	 * 		Grid Lines - drawn over image - not saved on image
+	 */
 	
 	JLabel userGridX = new JLabel("");
 	JLabel userGridY = new JLabel("");
@@ -25,6 +48,14 @@ public class PanelDraw extends JPanel implements MouseListener{
 	
 	PanelDraw() {
 		
+		// Mouse properties
+		mouseLoc = new Dimension(this.getWidth()/2, this.getHeight()/2);
+		mouseX = mouseLoc.width;
+		mouseY = mouseLoc.height;
+		addMouseMotionListener(this);
+		addMouseListener(this);
+
+
 		userGridX.setText("Rows: " + PixelTilesMain.userGridLineRows);
 		userGridY.setText("Cols: " + PixelTilesMain.userGridLineCols);
 				
@@ -85,7 +116,7 @@ public class PanelDraw extends JPanel implements MouseListener{
 			line += stepX;
 		}
 
-		// Draw Cols
+		// Draw cols
 		line = stepY;
 		for(int i = 0; i < uglCols; i++) {
 			g.drawLine(line, 0, line, gridSizeCorrectedY);
@@ -93,32 +124,34 @@ public class PanelDraw extends JPanel implements MouseListener{
 		}
 		
 		// DEVELOPMENT: Show sizes
-		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/" + pX);
-		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/" + pY);
+		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/ mX:" + mouseLoc.getWidth());
+		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/ mY:" + mouseLoc.getHeight());
 
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+		mousePressed = true;
+		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+
+		mousePressed = false;
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -126,6 +159,20 @@ public class PanelDraw extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+		mouseLoc.setSize(e.getX(), e.getY());
+		repaint();
+
 	}
 	
 	

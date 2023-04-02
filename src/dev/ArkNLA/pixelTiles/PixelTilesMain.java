@@ -3,6 +3,7 @@ package dev.ArkNLA.pixelTiles;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +51,7 @@ public class PixelTilesMain implements ActionListener {
 	public static int userGridLineRows = 1;
 	public static int userGridLineCols = 1;
 	public static Color userColor;
+	public static Image userImage;
 	
 	PixelTilesMain() {
 
