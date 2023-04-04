@@ -36,7 +36,7 @@ public class PixelTilesMain implements ActionListener {
 	PanelColorSelect paneColorSelect = new PanelColorSelect();	// Border layout WEST
 	static PanelDraw paneDraw = new PanelDraw();				// Border layout CENTER
 	JPanel paneTools = new JPanel();							// Border layout EAST
-	static JPanel panePreview = new JPanel();							// paneTools layout NORTH
+	static PanelPreview panePreview = new PanelPreview();							// paneTools layout NORTH
 	PanelDrawTools paneDrawTools = new PanelDrawTools();				// paneTools layout CENTER
 	PanelSave paneSave = new PanelSave();								// paneTools layout SOUTH
 	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();		// Border layout SOUTH
@@ -80,13 +80,19 @@ public class PixelTilesMain implements ActionListener {
 		frame.add(paneColorSelect, BorderLayout.WEST);
 		
 		// Draw pane setup
+		
 		frame.add(paneDraw, BorderLayout.CENTER);
 		
 		// Tools pane setup
 		
 		paneTools.setLayout(new BorderLayout());
-
-		paneTools.add(panePreview, BorderLayout.NORTH);
+		
+		// Tools pane NORTH
+		
+		panePreview.setPreferredSize(new Dimension(250,250));
+		paneDrawTools.add(panePreview, BorderLayout.NORTH);
+		
+		
 		paneTools.add(paneDrawTools, BorderLayout.CENTER);
 		paneTools.add(paneSave, BorderLayout.SOUTH);
 		
@@ -111,7 +117,7 @@ public class PixelTilesMain implements ActionListener {
 		frame.setTitle("Pixel Tiles by ArkNLA.dev");
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
 		buttonExit.setVisible(false);
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setVisible(true);
 
 	}

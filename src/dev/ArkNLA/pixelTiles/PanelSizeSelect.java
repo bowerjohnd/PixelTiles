@@ -23,6 +23,10 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	int size2value = 25;
 	int size3value = 50;
 	
+	/*
+	 * 		TODO: reduce custom rows AND cols to only one adjustable value, squares only
+	 */
+	
 	PanelSizeSelect() {
 		
 		labelGrid1 = new JLabel(size1value + "x" + size1value);
@@ -63,6 +67,7 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 		PixelTilesMain.userGridLineCols = cols;
 		textFieldCustomRows.setText(Integer.toString(size1value));
 		textFieldCustomCols.setText(Integer.toString(size1value));
+		textFieldCustomCols.setEditable(false);
 		
 		
 		//setBackground(Color.LIGHT_GRAY);

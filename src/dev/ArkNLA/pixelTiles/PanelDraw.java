@@ -1,10 +1,10 @@
 package dev.ArkNLA.pixelTiles;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,10 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-import dev.ArkNLA.pixelTiles.PixelTilesMain;
-
 public class PanelDraw extends JPanel implements MouseListener, MouseMotionListener{
 
+	/*
+	 * 		Known Bugs:		- Anomalies on pane
+	 * 		4/4/23			
+	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	/*
@@ -25,15 +28,14 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	 */
 	
 	Boolean mousePressed = false;
-	Dimension mouseLoc;
-	int mouseX, mouseY;
-	
+	Boolean mouseClicked = false;
+	Point mouseLoc;
 
 	/*
 	 * 		Image drawn by user
 	 */
-	
-	Image offScreenImage = null;
+		
+	Image imageUserDrawn = null;
 	
 	/*
 	 * 		Grid Lines - drawn over image - not saved on image
@@ -45,13 +47,16 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	Border border = new LineBorder(Color.black, 2);
 	
 	private int pX, pY, line, stepX, stepY, gridSize;
-	
+	private int gridSizeCorrectedX = 0;
+	private int gridSizeCorrectedY = 0;
+
+	int uglRows = 1;
+	int uglCols = 1;
+
 	PanelDraw() {
 		
 		// Mouse properties
-		mouseLoc = new Dimension(this.getWidth()/2, this.getHeight()/2);
-		mouseX = mouseLoc.width;
-		mouseY = mouseLoc.height;
+		mouseLoc = new Point(0, 0);
 		addMouseMotionListener(this);
 		addMouseListener(this);
 
@@ -75,18 +80,20 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		int gridSizeCorrectedX = 0;
-		int gridSizeCorrectedY = 0;
-		int uglRows = PixelTilesMain.userGridLineRows;
-		int uglCols = PixelTilesMain.userGridLineCols;
+	protected void paintComponent(Graphics pane) {
+		
+		/*
+		 * Adjust grid and grid steps when user resizes screen
+		 * 
+		 */
 		
 		// Get size of Panel and use smaller to create square grid, corrected for mod (%) remainder
 		pX = this.getWidth();
 		pY = this.getHeight();
-		
+
+		uglRows = PixelTilesMain.userGridLineRows;
+		uglCols = PixelTilesMain.userGridLineCols;
+
 		if (pX > pY) {
 			
 			// Height is smaller than width
@@ -108,38 +115,108 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 			gridSizeCorrectedY = gridSize - gridSize%uglRows;
 
 		}
+		
+		/*
+		 * 	Off screen image to prevent flickering
+		 */
+		
+        Dimension dimen = new Dimension(gridSizeCorrectedX, gridSizeCorrectedY);
+
+    	if (imageUserDrawn == null) {
+    		imageUserDrawn = createImage(dimen.width, dimen.height);
+    	}
+    	
+    	Graphics g = imageUserDrawn.getGraphics();
+		
+
+    	/*
+		 * 	Draw filled rectangle within draw grid
+		 */
+		
+		// find grid line starting point the mouse cursor is in
+		
+		if (mousePressed || mouseClicked) {
+
+			int dx = 0;
+			int dy = 0;
+			
+			for (int i = 0; i < gridSizeCorrectedX+stepX; i += stepX) {
+				
+				if (mouseLoc.x < i) {
+					dx = i - stepX;
+					break;
+				} else {
+					dx = gridSizeCorrectedX - stepX;
+				}
+			}
+			
+			for (int i = 0; i < gridSizeCorrectedY+stepY; i += stepY) {
+				
+				if (mouseLoc.y < i) {
+					dy = i - stepY;
+					break;
+				} else {
+					dy = gridSizeCorrectedY - stepY;
+				}
+			}
+						
+			g.setColor(PixelTilesMain.userColor);
+			g.fillRect(dx, dy, stepX, stepY);
+				
+			mouseClicked = false;
+		}
+		
+		/*
+		 * 	Draw off screen image to pane
+		 */
+		
+		pane.drawImage(imageUserDrawn, 0, 0, this);
+		
+		/*
+		 * 	set global user image to off screen image
+		 */
+		
+		PixelTilesMain.userImage = imageUserDrawn;
+		
+		/*
+		 *  Draw grid lines over image
+		 */
 						
 		// Draw rows
 		line = stepX;
 		for(int i = 0; i < uglRows; i++) {
-			g.drawLine(0, line, gridSizeCorrectedX, line);
+			pane.drawLine(0, line, gridSizeCorrectedX, line);
 			line += stepX;
 		}
 
 		// Draw cols
 		line = stepY;
 		for(int i = 0; i < uglCols; i++) {
-			g.drawLine(line, 0, line, gridSizeCorrectedY);
+			pane.drawLine(line, 0, line, gridSizeCorrectedY);
 			line += stepY;
 		}
 		
 		// DEVELOPMENT: Show sizes
-		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/ mX:" + mouseLoc.getWidth());
-		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/ mY:" + mouseLoc.getHeight());
+		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/ mX:" + mouseLoc.x);
+		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/ mY:" + mouseLoc.y);
 
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
+		mouseClicked = true;
+		repaint();
+		PixelTilesMain.panePreview.repaint();
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 		mousePressed = true;
+		repaint();
+		PixelTilesMain.panePreview.repaint();
 		
 	}
 
@@ -163,18 +240,36 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
+
+		mousePressed = true;
+		
+		int x = e.getX();
+		int y = e.getY();
+		
+		if (x > gridSizeCorrectedX)	x = gridSizeCorrectedX;
+		if (y > gridSizeCorrectedY) y = gridSizeCorrectedY;
+		
+		mouseLoc.x = x;
+		mouseLoc.y = y;
+		
+		repaint();
+		PixelTilesMain.panePreview.repaint();
 		
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
-		mouseLoc.setSize(e.getX(), e.getY());
+		
+		int x = e.getX();
+		int y = e.getY();
+		
+		if (x > gridSizeCorrectedX)	x = gridSizeCorrectedX;
+		if (y > gridSizeCorrectedY) y = gridSizeCorrectedY; 
+		
+		mouseLoc.x = x;
+		mouseLoc.y = y;
 		repaint();
 
 	}
-	
-	
 
 }

@@ -28,9 +28,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	// THIS generic
 	
 	private int pY;
-	private int intRed = 255;		//
-	private int intGreen = 255;		// Default color: white
-	private int intBlue = 255;		//
+	private int intRed = 0;		//
+	private int intGreen = 0;		// Default color: black
+	private int intBlue = 0;		//
 	private int intOpacity = 255;	//
 	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
 	
