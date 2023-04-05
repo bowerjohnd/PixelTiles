@@ -83,7 +83,10 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	@Override
-	protected void paintComponent(Graphics pane) {
+	public void paint(Graphics pane) {
+		
+		pane.setColor(Color.LIGHT_GRAY);
+		pane.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		/*
 		 * Adjust grid and grid steps when user resizes screen

@@ -45,13 +45,14 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	private JLabel labelRed, labelGreen, labelBlue, labelAll, labelOpacity, labelRGB, labelHEX;
 	private JTextField textRed, textGreen, textBlue, textOpacity, textRGB, textHEX;
 	private JSlider slideRed, slideGreen, slideBlue, slideAll, slideOpacity;
-	private JButton buttonRGBcopy, buttonHEXcopy,
+	private JButton buttonRGBcopy, buttonHEXcopy, buttonSaveFavorite,
 					butRed, butGreen, butBlue, butYellow, butOrange, butBlack,
 					butGray, butWhite;
 	
 	// THIS border layout CENTER
 	
 	private JScrollPane paneCenter = new JScrollPane();
+	private PanelColorFavorites paneFavorites = new PanelColorFavorites();
 
 	
 	
@@ -267,6 +268,10 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		slideOpacity = new JSlider(0, 255, 1);
 		slideOpacity.addChangeListener(this);
 		
+		// Save to favorites button
+		buttonSaveFavorite = new JButton("Save");
+		buttonSaveFavorite.addActionListener(this);
+		
 		c.gridy = 4;
 		c.gridx = 0;
 		paneRGB.add(labelOpacity, c);
@@ -277,6 +282,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		c.gridx = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		paneRGB.add(slideOpacity, c);
+		c.gridy = 5;
+		c.gridx = 2;
+		paneRGB.add(buttonSaveFavorite, c);
 		
 		// Add panels to paneNORTH 
 		
@@ -293,8 +301,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		 * 
 		 * 		CENTER PANEL begins
 		 */
+		paneCenter.getViewport().add(paneFavorites);
 		
-		//		TODO: saved colors added to list: Color - edit - delete
+		add(paneCenter,BorderLayout.CENTER);
 		
 		/*
 		 * 		CENTER PANEL ends
@@ -402,6 +411,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			}
 		}
 
+		setSlidersAndTexts();
 		setText();
 		setDrawColor();
 	}
@@ -504,11 +514,17 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			setDrawColor();
 		}
 		
+		if (source == buttonSaveFavorite) {
+			paneFavorites.addFavorite(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
+			paneFavorites.repaint();
+		}
+		
 		/*
 		 * 		NORTH PANEL end
 		 * 
-		 * 		CENTER PANEL begin
+		 * 		
 		 */
+		
 		
 	}
 
@@ -594,5 +610,14 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		textRed.setText(String.valueOf(intRed));
 		textGreen.setText(String.valueOf(intGreen));
 		textBlue.setText(String.valueOf(intBlue));
+	}
+	
+	public void setColorToFavorite() {
+		intRed = PixelTilesMain.userColor.getRed();
+		intGreen = PixelTilesMain.userColor.getGreen();
+		intBlue = PixelTilesMain.userColor.getBlue();
+		intOpacity = PixelTilesMain.userColor.getAlpha();
+		
+		setDrawColor();
 	}
 }

@@ -7,6 +7,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -68,14 +70,16 @@ public class PixelTilesMain implements ActionListener {
 	public static Image userImage;
 	
 	PixelTilesMain() {
-
+		
 		// User selections default
 		
 		userGridLineRows = paneSizeSelect.getGridRows();
 		userGridLineCols = paneSizeSelect.getGridCols();
 		userColor = Color.black;
 
-		// Title bar pane setup
+		/*
+		*	 Title bar pane setup	FRAME NORTH
+		*/
 		
 		paneTitleBar.setLayout(new BorderLayout());
 		
@@ -89,15 +93,21 @@ public class PixelTilesMain implements ActionListener {
 		
 		frame.add(paneTitleBar, BorderLayout.NORTH);
 		
-		// Color select pane setup
+		/*
+		*	 Color select pane setup	FRAME WEST
+		*/
 		
 		frame.add(paneColorSelect, BorderLayout.WEST);
 		
-		// Draw pane setup
+		/*
+		*	 Draw pane setup	FRAME CENTER
+		*/
 		
 		frame.add(paneDraw, BorderLayout.CENTER);
 		
-		// Tools pane setup
+		/*
+		*	 Tools pane setup	FRAME EAST
+		*/
 		
 		paneTools.setLayout(new BorderLayout());
 		
@@ -112,7 +122,9 @@ public class PixelTilesMain implements ActionListener {
 		
 		frame.add(paneTools, BorderLayout.EAST);
 		
-		// Size select pane setup
+		/*
+		*	 Size select pane setup		FRAME SOUTH
+		*/
 		
 		frame.add(paneSizeSelect, BorderLayout.SOUTH);
 		
