@@ -15,7 +15,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class PixelTilesMain implements ActionListener {
-
+	
+	/*
+	 * 		4/4/2023
+	 * 		Known Bugs:		- see PanelDraw
+	 * 		
+	 * 		TODO: 			- fix bugs
+	 * 						- see PanelDraw
+	 * 						- see PanelPreview
+	 * 						- add clearing of image
+	 * 						* Start on saving favorite colors
+	 * 						* Start on saving image to file
+	 * 						- Considering expanding frame to tabs to paint saved images to grid/image
+	 * 
+	 */
+	
 	// Screen properties
 	
 	private final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;

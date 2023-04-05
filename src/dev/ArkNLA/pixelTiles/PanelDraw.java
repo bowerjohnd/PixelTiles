@@ -17,8 +17,12 @@ import javax.swing.border.LineBorder;
 public class PanelDraw extends JPanel implements MouseListener, MouseMotionListener{
 
 	/*
+	 * 		4/4/2023
 	 * 		Known Bugs:		- Anomalies on pane
-	 * 		4/4/23			
+	 * 		
+	 * 		TODO: 			- Fix bugs
+	 * 						- Allow resize: resize pane to correctedX/Y, resize image/draw area to fit pane
+	 * 								
 	 */
 	
 	private static final long serialVersionUID = 1L;
@@ -55,7 +59,6 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 
 	PanelDraw() {
 		
-		// Mouse properties
 		mouseLoc = new Point(0, 0);
 		addMouseMotionListener(this);
 		addMouseListener(this);
