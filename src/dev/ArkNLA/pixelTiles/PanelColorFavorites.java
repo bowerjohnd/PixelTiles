@@ -134,7 +134,7 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 	private void loadColorFavoritesFromFile() {
 
 		try {
-			FileInputStream fis = new FileInputStream("PixelTilesFavColors.tmp");
+			FileInputStream fis = new FileInputStream("data/PixelTilesFavColors.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			arrayColorString = (ArrayList<String>) ois.readObject();
 			ois.close();
@@ -153,7 +153,11 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 	private void saveColorFavoritesToFile() {
 		
 		try {
-			FileOutputStream fos = new FileOutputStream("PixelTilesFavColors.tmp");
+			File dir = new File("data/");
+			if (!dir.exists()){
+			    dir.mkdirs();
+			}
+			FileOutputStream fos = new FileOutputStream("data/PixelTilesFavColors.dat");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(arrayColorString);
 			oos.close();
