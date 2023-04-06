@@ -48,8 +48,21 @@ public class PanelPreview extends JPanel implements ActionListener{
 			
 			image = PixelTilesMain.userImage.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT);
 			
-			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, 250, 250);
+			// Paint tiny grid behind image preview to show opacity
+			
+			for (int i = 0; i < 250; i++) {
+				
+				if (i%2 == 0) {
+					g.setColor(Color.WHITE);
+					g.drawLine(i, 0, i, 250);
+					g.drawLine(0, i, 250, i);				
+				} else {
+					g.setColor(Color.DARK_GRAY);
+					g.drawLine(i, 0, i, 250);
+					g.drawLine(0, i, 250, i);
+				}
+
+			}
 			
 			g.drawImage(image, 0, 0, null);
 		

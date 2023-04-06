@@ -38,6 +38,8 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 		arrayColorString.add(fav);
 		saveColorFavoritesToFile();
 		populateJPanels();
+		
+		revalidate();
 	}
 	
 	@Override
@@ -45,47 +47,44 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 
 		Object source = e.getSource();
 		
-		//if (source == butUse) {
-			for(int i = 0; i < butUse.size(); i++) {
-				if (source == butUse.get(i)) {
+		for(int i = 0; i < butUse.size(); i++) {
+			if (source == butUse.get(i)) {
 					
-					String[] split = arrayColorString.get(i).split(", ");
+				String[] split = arrayColorString.get(i).split(", ");
 					
-					int r = 0;
-					int g = 0;
-					int b = 0;
-					int o = 0;
-					
-					try {
-						r = Integer.parseInt(split[0]);
-						g = Integer.parseInt(split[1]);
-						b = Integer.parseInt(split[2]);
-						o = Integer.parseInt(split[3]);
-					} catch (Exception ex){
-						labelStatus.setText("ACTION: Error converting rgbo to int.");
-					}
-					
-					PixelTilesMain.userColor = new Color(r,g,b,o);
-					
-
-				}
-			}
-		//}
-		
-		//if (source == butDelete) {
-			for(int i = 0; i < butDelete.size(); i++) {
-				if (source == butDelete.get(i)) {
+				int r = 0;
+				int g = 0;
+				int b = 0;
+				int o = 0;
 				
-					arrayColorString.remove(i);
-					butUse.remove(i);
-					butDelete.remove(i);
-					saveColorFavoritesToFile();
-					
-					populateJPanels();	
+				try {
+					r = Integer.parseInt(split[0]);
+					g = Integer.parseInt(split[1]);
+					b = Integer.parseInt(split[2]);
+					o = Integer.parseInt(split[3]);
+				} catch (Exception ex){
+					labelStatus.setText("ACTION: Error converting rgbo to int.");
 				}
+					
+				PixelTilesMain.userColor = new Color(r,g,b,o);
+				PixelTilesMain.paneColorSelect.setColorToFavorite();
+
 			}
-		//}
-		
+		}
+
+		for(int i = 0; i < butDelete.size(); i++) {
+			if (source == butDelete.get(i)) {
+			
+				arrayColorString.remove(i);
+				butUse.remove(i);
+				butDelete.remove(i);
+				saveColorFavoritesToFile();
+				
+				populateJPanels();
+				
+				revalidate();
+			}
+		}
 	}
 	
 	private void populateJPanels() {
@@ -133,22 +132,28 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 	}
 	
 	private void loadColorFavoritesFromFile() {
-		
+
 		try {
-			FileInputStream fis = new FileInputStream("PixelTiles.tmp");
+			FileInputStream fis = new FileInputStream("PixelTilesFavColors.tmp");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			arrayColorString = (ArrayList<String>) ois.readObject();
 			ois.close();
 			labelStatus.setText("Loaded Success.");
+		} catch (FileNotFoundException fnf) {
+			
+			labelStatus.setText("Save your favorite colors here.");
+
 		} catch (Exception ex) {
-			labelStatus.setText("LOAD FILE: Error loading favorites to file.");
+
+			labelStatus.setText("LOAD FILE: Error loading favorites from file.");
+
 		}
 	}
 	
 	private void saveColorFavoritesToFile() {
 		
 		try {
-			FileOutputStream fos = new FileOutputStream("PixelTiles.tmp");
+			FileOutputStream fos = new FileOutputStream("PixelTilesFavColors.tmp");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(arrayColorString);
 			oos.close();

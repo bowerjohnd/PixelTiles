@@ -34,6 +34,8 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	private int intOpacity = 255;	//
 	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
 	
+	private int intSlideAllValue = 0;
+	
 	// THIS border layout NORTH
 	
 	private JPanel paneNorth = new JPanel();
@@ -78,10 +80,8 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		GridBagConstraints c = new GridBagConstraints();
 		
 		/*
-		 * 		Color selected pane north pane NORTH
+		 * 		Color selected pane NORTH
 		 */
-
-		//paneColorSelectedPreview.setPreferredSize(new Dimension(100,100));
 
 		paneColorSelectedPreview = new JPanel()
 		{
@@ -192,6 +192,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		
 		// Red adjustments
 		labelRed = new JLabel("Red:");
+		labelRed.setHorizontalAlignment(SwingConstants.LEFT);
 		textRed = new JTextField(3);
 		textRed.addKeyListener(this);
 		slideRed = new JSlider(0, 255, 1);
@@ -210,6 +211,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		
 		// Green adjustments
 		labelGreen = new JLabel("Green:");
+		labelGreen.setHorizontalAlignment(SwingConstants.LEFT);
 		textGreen = new JTextField(3);
 		textGreen.addKeyListener(this);
 		slideGreen = new JSlider(0, 255, 1);
@@ -228,6 +230,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		
 		// Blue adjustments
 		labelBlue = new JLabel("Blue:");
+		labelBlue.setHorizontalAlignment(SwingConstants.LEFT);
 		textBlue = new JTextField(3);
 		textBlue.addKeyListener(this);
 		slideBlue = new JSlider(0, 255, 1);
@@ -559,6 +562,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			
 			intBlue = v;			
 			textBlue.setText(String.valueOf(v));
+			
 		}
 
 		if (source == slideOpacity) {
@@ -567,12 +571,13 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			
 			intOpacity = v;			
 			textOpacity.setText(String.valueOf(v));
+			
 		}
 
 		if (source == slideAll) {
 
 			int v = slideAll.getValue();
-			
+
 			intRed = v;
 			intGreen = v;
 			intBlue = v;
@@ -590,19 +595,19 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		setDrawColor();
 	}
 	
-	public void setDrawColor() {
+	private void setDrawColor() {
 		paneColorSelectedPreview.setBackground(new Color(intRed, intGreen, intBlue, intOpacity));
 		colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
 		PixelTilesMain.userColor = colorSelected;
 	}
 	
-	public void setText() {
+	private void setText() {
 		textRGB.setText(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
 		textHEX.setText("#" + Integer.toHexString(intRed) + Integer.toHexString(intGreen) 
 							+ Integer.toHexString(intBlue) + Integer.toHexString(intOpacity));
 	}
 	
-	public void setSlidersAndTexts() {
+	private void setSlidersAndTexts() {
 		slideRed.setValue(intRed);
 		slideGreen.setValue(intGreen);
 		slideBlue.setValue(intBlue);
@@ -618,6 +623,8 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		intBlue = PixelTilesMain.userColor.getBlue();
 		intOpacity = PixelTilesMain.userColor.getAlpha();
 		
-		setDrawColor();
+		setSlidersAndTexts();
+		setText();
+		setDrawColor();		
 	}
 }

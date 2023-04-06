@@ -16,6 +16,7 @@ public class PanelPaintColorFavorites extends JPanel {
 	}
 	
 	public void paint (Graphics g) {
+		super.paintComponent(g);
 		
 		g.setColor(colorFavorite);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());

@@ -176,7 +176,10 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		 * 	Draw off screen image to pane
 		 */
 		
+
 		pane.drawImage(imageUserDrawn, 0, 0, this);
+
+		
 		
 		/*
 		 * 	set global user image to off screen image

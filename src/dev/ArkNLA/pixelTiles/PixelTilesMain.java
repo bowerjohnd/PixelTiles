@@ -48,14 +48,14 @@ public class PixelTilesMain implements ActionListener {
 	
 	JFrame frame = new JFrame();
 	
-	JPanel paneTitleBar = new JPanel();							// Border layout NORTH
-	PanelColorSelect paneColorSelect = new PanelColorSelect();	// Border layout WEST
-	static PanelDraw paneDraw = new PanelDraw();				// Border layout CENTER
-	JPanel paneTools = new JPanel();							// Border layout EAST
-	static PanelPreview panePreview = new PanelPreview();							// paneTools layout NORTH
-	PanelDrawTools paneDrawTools = new PanelDrawTools();				// paneTools layout CENTER
-	PanelSave paneSave = new PanelSave();								// paneTools layout SOUTH
-	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();		// Border layout SOUTH
+	JPanel paneTitleBar = new JPanel();									// Border layout NORTH
+	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// Border layout WEST
+	static PanelDraw paneDraw = new PanelDraw();						// Border layout CENTER
+	JPanel paneTools = new JPanel();									// Border layout EAST
+	static PanelPreview panePreview = new PanelPreview();						// paneTools layout NORTH
+	PanelDrawTools paneDrawTools = new PanelDrawTools();						// paneTools layout CENTER
+	PanelSave paneSave = new PanelSave();										// paneTools layout SOUTH
+	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();				// Border layout SOUTH
 	
 	// GUI components
 	
@@ -110,14 +110,14 @@ public class PixelTilesMain implements ActionListener {
 		*/
 		
 		paneTools.setLayout(new BorderLayout());
-		
-		// Tools pane NORTH
-		
+			
 		panePreview.setPreferredSize(new Dimension(250,250));
-		paneDrawTools.add(panePreview, BorderLayout.NORTH);
+		paneTools.add(panePreview, BorderLayout.NORTH);
 		
+		// Possible feature with mirror splits, etc.
+		// paneTools.add(paneDrawTools, BorderLayout.CENTER);
 		
-		paneTools.add(paneDrawTools, BorderLayout.CENTER);
+		paneSave.setPreferredSize(new Dimension(250,250));
 		paneTools.add(paneSave, BorderLayout.SOUTH);
 		
 		frame.add(paneTools, BorderLayout.EAST);
@@ -143,7 +143,7 @@ public class PixelTilesMain implements ActionListener {
 		frame.setTitle("Pixel Tiles by ArkNLA.dev");
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
 		buttonExit.setVisible(false);
-		frame.setResizable(false);
+		frame.setResizable(false);			// false until I can work out draw panel resizing
 		frame.setVisible(true);
 
 	}
@@ -168,4 +168,5 @@ public class PixelTilesMain implements ActionListener {
 		
 		System.exit(1);
 	}
+
 }
