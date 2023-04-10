@@ -83,8 +83,8 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 				}
 				
 				try {
-					ImageIO.write(userImage, "PNG", new File("images/" + textFilename.getText() + ".PNG"));
-					statusMessage.setText("Image " + textFilename.getText() + ".PNG has been saved.");
+					ImageIO.write(userImage, "PNG", new File("images/" + textFilename.getText() + ".png"));
+					statusMessage.setText("Image " + textFilename.getText() + ".png has been saved.");
 					textFilename.setText("");
 				} catch (Exception ex) {
 					statusMessage.setText("File not saved.");

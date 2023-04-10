@@ -1,13 +1,17 @@
 package dev.ArkNLA.pixelTiles;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +26,8 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	 * 		
 	 * 		TODO: 			- Fix bugs
 	 * 						- Allow resize: resize pane to correctedX/Y, resize image/draw area to fit pane
+	 * 								- bug possibly in way image is resized...
+	 * 								- bug when selecting size, it changes image size
 	 * 								
 	 */
 	
@@ -40,135 +46,89 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	 */
 		
 	Image imageUserDrawn = null;
+    BufferedImage resizedImg = null;
 	
 	/*
-	 * 		Grid Lines - drawn over image - not saved on image
+	 * 		General use
 	 */
-	
-	JLabel userGridX = new JLabel("");
-	JLabel userGridY = new JLabel("");
-	
-	Border border = new LineBorder(Color.black, 2);
-	
-	private int pX, pY, line, stepX, stepY, gridSize;
-	private int gridSizeCorrectedX = 0;
-	private int gridSizeCorrectedY = 0;
+    	
+    private Color colorInUse = Color.BLACK;
+	private int pX, pY, line, step, gridSize;
+	private int gridSizeCorrected = 0;
 
-	int uglRows = 1;
-	int uglCols = 1;
+	int userGrid = 1;
 
 	PanelDraw() {
+		
+		setLayout(new BorderLayout());
 		
 		mouseLoc = new Point(0, 0);
 		addMouseMotionListener(this);
 		addMouseListener(this);
-
-
-		userGridX.setText("Rows: " + PixelTilesMain.userGridLineRows);
-		userGridY.setText("Cols: " + PixelTilesMain.userGridLineCols);
-				
-		pX = this.getWidth();
-		pY = this.getHeight();
 		
-		if (pX > pY) {
-			gridSize = pY;
-		} else {
-			gridSize = pX;
-		}
-
-		add(userGridX);
-		add(userGridY);
-		
-		this.setBorder(border);
 	}
 	
 	@Override
 	public void paint(Graphics pane) {
 		
+		// Stops anomalies outside draw area
 		pane.setColor(Color.LIGHT_GRAY);
 		pane.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-		/*
-		 * Adjust grid and grid steps when user resizes screen
-		 * 
-		 */
+
+		// Get panel size before painting in case of window resizing
 		
-		// Get size of Panel and use smaller to create square grid, corrected for mod (%) remainder
-		pX = this.getWidth();
-		pY = this.getHeight();
-
-		uglRows = PixelTilesMain.userGridLineRows;
-		uglCols = PixelTilesMain.userGridLineCols;
-
-		if (pX > pY) {
-			
-			// Height is smaller than width
-			gridSize = pY;
-			stepX = (int)gridSize/uglRows;
-			stepY = (int)gridSize/uglCols;
-
-			gridSizeCorrectedX = gridSize - gridSize%uglCols;
-			gridSizeCorrectedY = gridSize - gridSize%uglRows;
-			
-		} else {
-			
-			// Width is smaller than height
-			gridSize = pX;
-			stepX = (int)gridSize/uglRows;
-			stepY = (int)gridSize/uglCols;
-
-			gridSizeCorrectedX = gridSize - gridSize%uglCols;
-			gridSizeCorrectedY = gridSize - gridSize%uglRows;
-
-		}
+		panelSize();
 		
 		/*
 		 * 	Off screen image to prevent flickering
 		 */
-		
-        Dimension dimen = new Dimension(gridSizeCorrectedX, gridSizeCorrectedY);
 
     	if (imageUserDrawn == null) {
-    		imageUserDrawn = createImage(dimen.width, dimen.height);
+    		imageUserDrawn = createImage(gridSizeCorrected, gridSizeCorrected);
+    	} else {
+    		imageUserDrawn = getScaledImage(imageUserDrawn, gridSizeCorrected, gridSizeCorrected);
     	}
-    	
-    	Graphics g = imageUserDrawn.getGraphics();
-		
 
+    	Graphics g = imageUserDrawn.getGraphics();
     	/*
 		 * 	Draw filled rectangle within draw grid
 		 */
 		
-		// find grid line starting point the mouse cursor is in
+		// find grid square mouse cursor is in
 		
 		if (mousePressed || mouseClicked) {
 
 			int dx = 0;
 			int dy = 0;
 			
-			for (int i = 0; i < gridSizeCorrectedX+stepX; i += stepX) {
+			// find x grid
+			for (int i = 0; i < gridSizeCorrected+step; i += step) {
 				
 				if (mouseLoc.x < i) {
-					dx = i - stepX;
+					dx = i - step;
 					break;
 				} else {
-					dx = gridSizeCorrectedX - stepX;
+					dx = gridSizeCorrected - step;
 				}
 			}
 			
-			for (int i = 0; i < gridSizeCorrectedY+stepY; i += stepY) {
+			// find y grid
+			for (int i = 0; i < gridSizeCorrected+step; i += step) {
 				
 				if (mouseLoc.y < i) {
-					dy = i - stepY;
+					dy = i - step;
 					break;
 				} else {
-					dy = gridSizeCorrectedY - stepY;
+					dy = gridSizeCorrected - step;
 				}
 			}
 						
 			g.setColor(PixelTilesMain.userColor);
-			g.fillRect(dx, dy, stepX, stepY);
-				
+			g.fillRect(dx, dy, step, step);							
+			
+			//System.out.println("dx: " + dx + " / dy: " + dy + " / step: " + step);
+
 			mouseClicked = false;
 		}
 		
@@ -177,37 +137,37 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		 */
 		
 
-		pane.drawImage(imageUserDrawn, 0, 0, this);
+		pane.drawImage(imageUserDrawn, 0, 0, gridSizeCorrected, gridSizeCorrected, this);
 
 		
 		
 		/*
-		 * 	set global user image to off screen image
+		 * 	set global user image to pane image before drawing grid lines
 		 */
 		
 		PixelTilesMain.userImage = imageUserDrawn;
 		
 		/*
-		 *  Draw grid lines over image
+		 *  Draw grid lines over user image
 		 */
 						
 		// Draw rows
-		line = stepX;
-		for(int i = 0; i < uglRows; i++) {
-			pane.drawLine(0, line, gridSizeCorrectedX, line);
-			line += stepX;
+		line = step;
+		for(int i = 0; i < userGrid; i++) {
+			pane.drawLine(0, line, gridSizeCorrected, line);
+			line += step;
 		}
 
 		// Draw cols
-		line = stepY;
-		for(int i = 0; i < uglCols; i++) {
-			pane.drawLine(line, 0, line, gridSizeCorrectedY);
-			line += stepY;
+		line = step;
+		for(int i = 0; i < userGrid; i++) {
+			pane.drawLine(line, 0, line, gridSizeCorrected);
+			line += step;
 		}
 		
 		// DEVELOPMENT: Show sizes
-		userGridX.setText("Rows: " + stepX + "/" + gridSizeCorrectedX + "/ mX:" + mouseLoc.x);
-		userGridY.setText("Cols: " + stepY + "/" + gridSizeCorrectedY + "/ mY:" + mouseLoc.y);
+		PixelTilesMain.labelDevMouseGridInfo.setText("Rows: " + step + "/" + gridSizeCorrected + "/ mX:" + mouseLoc.x
+									+ " ---- Cols: " + step + "/" + gridSizeCorrected + "/ mY:" + mouseLoc.y);
 
 	}
 	
@@ -255,8 +215,8 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		int x = e.getX();
 		int y = e.getY();
 		
-		if (x > gridSizeCorrectedX)	x = gridSizeCorrectedX;
-		if (y > gridSizeCorrectedY) y = gridSizeCorrectedY;
+		if (x > gridSizeCorrected) x = gridSizeCorrected;
+		if (y > gridSizeCorrected) y = gridSizeCorrected;
 		
 		mouseLoc.x = x;
 		mouseLoc.y = y;
@@ -272,13 +232,58 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		int x = e.getX();
 		int y = e.getY();
 		
-		if (x > gridSizeCorrectedX)	x = gridSizeCorrectedX;
-		if (y > gridSizeCorrectedY) y = gridSizeCorrectedY; 
+		if (x > gridSizeCorrected) x = gridSizeCorrected;
+		if (y > gridSizeCorrected) y = gridSizeCorrected; 
 		
 		mouseLoc.x = x;
 		mouseLoc.y = y;
 		repaint();
 
+	}
+	
+	private void panelSize() {
+		
+		// Get panel size
+		
+		pX = this.getWidth();
+		pY = this.getHeight();
+		
+		// Use smaller to create square grid, corrected for mod (%) remainder
+
+		if (pX > pY) {
+			gridSize = pY;
+		} else {
+			gridSize = pX;
+		}
+		
+		/*
+		 * Adjust grid to fit steps evenly
+		 * 
+		 */
+
+		userGrid = PixelTilesMain.userGridSize;
+		
+		step = (int)gridSize/userGrid;
+
+		gridSizeCorrected = gridSize - gridSize%userGrid;
+			
+	}
+	
+	/**
+	 * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+	 * Resizes an image using a Graphics2D object backed by a BufferedImage.
+	 * @param srcImg - source image to scale
+	 * @param w - desired width
+	 * @param h - desired height
+	 * @return - the new resized image
+	 */
+	private Image getScaledImage(Image srcImg, int w, int h){
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 0, 0, w, h, null);
+	    g2.dispose();        
+	    return resizedImg;
 	}
 
 }

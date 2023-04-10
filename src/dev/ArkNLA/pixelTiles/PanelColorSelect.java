@@ -6,11 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class PanelColorSelect extends JPanel implements ActionListener, KeyListener, ChangeListener{
+public class PanelColorSelect extends JPanel implements ActionListener, KeyListener, ChangeListener, MouseListener{
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +43,8 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	
 	private JPanel paneNorth = new JPanel();
 	private JPanel paneColorSelected = new JPanel();
-	private JPanel paneColorSelectedPreview; 			// initialized in constructor
+	private JPanel paneColorSelectedPreview = new JPanel();
+	private JPanel panePreview, panePreviewLeft, panePreviewRight; 			// initialized in constructor
 	private JPanel paneColorSelectedText = new JPanel();
 	private JPanel paneRGB = new JPanel();
 	private JPanel panePresetColors = new JPanel();
@@ -82,14 +86,14 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		/*
 		 * 		Color selected pane NORTH
 		 */
-
-		paneColorSelectedPreview = new JPanel()
+		
+		// Swing doesn't support opacity on backgrounds
+		//		- Anomalies occur with only setBackground on pane
+		// 		- Get background color and paint a rectangle over it with opacity
+		//		* Source: https://tips4java.wordpress.com/2009/05/31/backgrounds-with-transparency/
+		
+		panePreview = new JPanel()
 		{
-			// Swing doesn't support opacity on backgrounds
-			//		- Anomalies occur with only setBackground on pane
-			// 		- Get background color and paint a rectangle over it with opacity
-			//		* Fix source: https://tips4java.wordpress.com/2009/05/31/backgrounds-with-transparency/
-			
 		    protected void paintComponent(Graphics g)
 		    {
 		        g.setColor( getBackground() );
@@ -97,10 +101,38 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		        super.paintComponent(g);
 		    }
 		};
-		paneColorSelectedPreview.setPreferredSize(new Dimension(100,100));
-		paneColorSelectedPreview.setOpaque(false);
-		paneColorSelectedPreview.setBackground(colorSelected);
-
+		
+		panePreviewLeft = new JPanel()
+		{		
+		    protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		
+		panePreviewRight = new JPanel()
+		{
+		    protected void paintComponent(Graphics g)
+		    {
+		        g.setColor( getBackground() );
+		        g.fillRect(0, 0, getWidth(), getHeight());
+		        super.paintComponent(g);
+		    }
+		};
+		
+		panePreview.addMouseListener(this);
+		panePreview.setBackground(PixelTilesMain.userColor);
+		panePreviewLeft.setBackground(PixelTilesMain.userColorLeft);
+		panePreviewRight.setBackground(PixelTilesMain.userColorRight);		
+		
+		paneColorSelectedPreview.setPreferredSize(new Dimension(100, 100));
+		paneColorSelectedPreview.setLayout(new BorderLayout());
+		paneColorSelectedPreview.add(panePreview, BorderLayout.SOUTH);
+		paneColorSelectedPreview.add(panePreviewLeft, BorderLayout.WEST);
+		paneColorSelectedPreview.add(panePreviewRight, BorderLayout.EAST);
+		
 		paneColorSelected.add(paneColorSelectedPreview, BorderLayout.NORTH);
 		
 		labelRGB = new JLabel("RGBA:");
@@ -626,5 +658,41 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		setSlidersAndTexts();
 		setText();
 		setDrawColor();		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			PixelTilesMain.userColorLeft = colorSelected;
+		}
+		if (e.getButton() == MouseEvent.BUTTON2) {
+			PixelTilesMain.userColorRight = colorSelected;
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -59,23 +59,26 @@ public class PixelTilesMain implements ActionListener {
 	
 	// GUI components
 	
-	JLabel labelTitle = new JLabel("Pixel Tiles by ArkNLA.dev");
+	static JLabel labelDevMouseGridInfo;
+	JLabel labelTitle = new JLabel("Pixel Tiles by John Bower");
 	JButton buttonExit = new JButton("Exit");
 	
 	// User selections
 	
-	public static int userGridLineRows = 1;
-	public static int userGridLineCols = 1;
+	public static int userGridSize = 1;
 	public static Color userColor;
+	public static Color userColorLeft;
+	public static Color userColorRight;
 	public static Image userImage;
 	
 	PixelTilesMain() {
 		
 		// User selections default
 		
-		userGridLineRows = paneSizeSelect.getGridRows();
-		userGridLineCols = paneSizeSelect.getGridCols();
+		userGridSize = paneSizeSelect.getGrid();
 		userColor = Color.black;
+		userColorLeft = Color.black;
+		userColorRight = Color.white;
 
 		/*
 		*	 Title bar pane setup	FRAME NORTH
@@ -90,6 +93,10 @@ public class PixelTilesMain implements ActionListener {
 		paneTitleBar.setBackground(Color.LIGHT_GRAY);
 		paneTitleBar.add(labelTitle, BorderLayout.CENTER);
 		paneTitleBar.add(buttonExit, BorderLayout.EAST);
+		
+		// DEV info
+		labelDevMouseGridInfo = new JLabel("DEV");
+		//paneTitleBar.add(labelDevMouseGridInfo, BorderLayout.WEST);
 		
 		frame.add(paneTitleBar, BorderLayout.NORTH);
 		
@@ -140,10 +147,10 @@ public class PixelTilesMain implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(frameX, frameY, frameW, frameH);
-		frame.setTitle("Pixel Tiles by ArkNLA.dev");
+		frame.setTitle("Pixel Tiles by John Bower");
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
 		buttonExit.setVisible(false);
-		frame.setResizable(false);			// false until I can work out draw panel resizing
+		frame.setResizable(true);			// false until I can work out draw panel resizing
 		frame.setVisible(true);
 
 	}
