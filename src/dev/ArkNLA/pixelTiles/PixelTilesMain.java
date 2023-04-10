@@ -118,7 +118,7 @@ public class PixelTilesMain implements ActionListener {
 		
 		paneTools.setLayout(new BorderLayout());
 			
-		panePreview.setPreferredSize(new Dimension(250,250));
+		panePreview.setPreferredSize(new Dimension(250,305));
 		paneTools.add(panePreview, BorderLayout.NORTH);
 		
 		// Possible feature with mirror splits, etc.
