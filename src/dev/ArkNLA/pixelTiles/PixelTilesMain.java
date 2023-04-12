@@ -26,8 +26,7 @@ public class PixelTilesMain implements ActionListener {
 	 * 						- see PanelDraw
 	 * 						- see PanelPreview
 	 * 						- add clearing of image
-	 * 						* Start on saving favorite colors
-	 * 						* Start on saving image to file
+	 * 						- Saving image to file in custom sizes
 	 * 						- Considering expanding frame to tabs to paint saved images to grid/image
 	 * 
 	 */
@@ -116,12 +115,15 @@ public class PixelTilesMain implements ActionListener {
 		*	 Tools pane setup	FRAME EAST
 		*/
 		
-		paneTools.setLayout(new BorderLayout());
-			
+		paneTools.setLayout(new BorderLayout());			
 		panePreview.setPreferredSize(new Dimension(250,305));
+		
 		paneTools.add(panePreview, BorderLayout.NORTH);
 		
-		// Possible feature with mirror splits, etc.
+		// Possible feature with mirror splits, clear image, etc.
+		
+		paneTools.add(paneDrawTools, BorderLayout.CENTER);
+		
 		// paneTools.add(paneDrawTools, BorderLayout.CENTER);
 		
 		paneSave.setPreferredSize(new Dimension(250,250));
@@ -150,7 +152,7 @@ public class PixelTilesMain implements ActionListener {
 		frame.setTitle("Pixel Tiles by John Bower");
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
 		buttonExit.setVisible(false);
-		frame.setResizable(true);			// false until I can work out draw panel resizing
+		frame.setResizable(true);			
 		frame.setVisible(true);
 
 	}

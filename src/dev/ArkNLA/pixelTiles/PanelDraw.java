@@ -37,16 +37,16 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	 * 		Tracking mouse in panel
 	 */
 	
-	Boolean mousePressed = false;
-	Boolean mouseClicked = false;
-	Point mouseLoc;
+	private Boolean mousePressed = false;
+	private Boolean mouseClicked = false;
+	private Point mouseLoc;
 
 	/*
 	 * 		Image drawn by user
 	 */
 		
-	Image imageUserDrawn = null;
-    BufferedImage resizedImg = null;
+	private Image imageUserDrawn = null;
+    private BufferedImage resizedImg = null;
 	
 	/*
 	 * 		General use
@@ -55,7 +55,8 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
     private Color colorInUse = Color.BLACK;
 	private int pX, pY, line, step, gridSize;
 	private int gridSizeCorrected = 0;
-
+	private Boolean boolClearImage = false;
+	
 	int userGrid = 1;
 
 	PanelDraw() {
@@ -75,7 +76,6 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		pane.setColor(Color.LIGHT_GRAY);
 		pane.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-
 		// Get panel size before painting in case of window resizing
 		
 		panelSize();
@@ -123,7 +123,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 					dy = gridSizeCorrected - step;
 				}
 			}
-						
+			
 			g.setColor(PixelTilesMain.userColor);
 			g.fillRect(dx, dy, step, step);							
 			
@@ -132,6 +132,13 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 			mouseClicked = false;
 		}
 		
+		
+		if (boolClearImage == true) {
+			imageUserDrawn = null;
+			imageUserDrawn = createImage(gridSizeCorrected, gridSizeCorrected);
+			boolClearImage = false;
+		}
+
 		/*
 		 * 	Draw off screen image to pane
 		 */
@@ -286,4 +293,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	    return resizedImg;
 	}
 
+	public void clearImage() {
+		boolClearImage = true;
+	}
 }
