@@ -1,5 +1,6 @@
 package dev.ArkNLA.pixelTiles;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,14 +46,13 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	 * 		Image drawn by user
 	 */
 		
-	private Image imageUserDrawn = null;
-    private BufferedImage resizedImg = null;
+	private BufferedImage imageUserDrawn = null;
 	
 	/*
 	 * 		General use
 	 */
-    	
-    private Color colorInUse = Color.BLACK;
+	
+	Graphics2D g2;
 	private int pX, pY, line, step, gridSize;
 	private int gridSizeCorrected = 0;
 	private Boolean boolClearImage = false;
@@ -67,14 +67,40 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		
+		setOpaque(false);
+		
 	}
 	
 	@Override
 	public void paint(Graphics pane) {
 		
 		// Stops anomalies outside draw area
-		pane.setColor(Color.LIGHT_GRAY);
+		pane.setColor(Color.WHITE);
 		pane.fillRect(0, 0, this.getWidth(), this.getHeight());
+		
+		// Draw alternating white squares on background to indicate transparency
+		pane.setColor(Color.LIGHT_GRAY);
+		
+		int transpWidth = 0;
+		int transpHeight = 0;
+
+		while (transpHeight < this.getHeight()) {
+			
+			while (transpWidth < this.getWidth()) {
+
+				pane.fillRect(transpWidth, transpHeight, 10, 10);
+				transpWidth += 20;
+			}
+			
+			if (transpHeight%20 == 0) {
+				transpWidth = 10;
+			} else {
+				transpWidth = 0;
+			}
+			
+			transpHeight += 10;
+			
+		}
 		
 		// Get panel size before painting in case of window resizing
 		
@@ -85,12 +111,14 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		 */
 
     	if (imageUserDrawn == null) {
-    		imageUserDrawn = createImage(gridSizeCorrected, gridSizeCorrected);
+    		imageUserDrawn = new BufferedImage(gridSizeCorrected, gridSizeCorrected, BufferedImage.TYPE_INT_ARGB);
+        	g2 = (Graphics2D) imageUserDrawn.createGraphics();
     	} else {
-    		imageUserDrawn = getScaledImage(imageUserDrawn, gridSizeCorrected, gridSizeCorrected);
+    		imageUserDrawn = (BufferedImage) getScaledImage(imageUserDrawn, gridSizeCorrected, gridSizeCorrected);
+        	g2 = (Graphics2D) imageUserDrawn.getGraphics();
     	}
 
-    	Graphics g = imageUserDrawn.getGraphics();
+    	
     	/*
 		 * 	Draw filled rectangle within draw grid
 		 */
@@ -124,18 +152,17 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 				}
 			}
 			
-			g.setColor(PixelTilesMain.userColor);
-			g.fillRect(dx, dy, step, step);							
+			g2.setColor(PixelTilesMain.userColor);
+			g2.fillRect(dx, dy, step, step);							
 			
 			//System.out.println("dx: " + dx + " / dy: " + dy + " / step: " + step);
 
 			mouseClicked = false;
 		}
 		
-		
 		if (boolClearImage == true) {
 			imageUserDrawn = null;
-			imageUserDrawn = createImage(gridSizeCorrected, gridSizeCorrected);
+			imageUserDrawn = new BufferedImage(gridSizeCorrected, gridSizeCorrected, BufferedImage.TYPE_INT_ARGB);
 			boolClearImage = false;
 		}
 
@@ -143,7 +170,23 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		 * 	Draw off screen image to pane
 		 */
 		
-
+		/*
+		// Testing transparency on new transparency background, working.
+		pane.setColor(new Color(75,75,75,50));
+		pane.fillRect(0, 0, 200, 200);
+		pane.setColor(new Color(125,125,0,100));
+		pane.fillRect(200, 0, 200, 200);
+		pane.setColor(new Color(125,0,125,150));
+		pane.fillRect(0, 200, 200, 200);
+		pane.setColor(new Color(0,125,125,200));
+		pane.fillRect(200, 200, 200, 200);
+		pane.setColor(new Color(0,0,0,225));
+		pane.fillRect(0, 400, 200, 200);
+		pane.setColor(new Color(175,200,100,255));
+		pane.fillRect(400, 400, 200, 200);
+		pane.setColor(Color.LIGHT_GRAY);
+		*/
+		
 		pane.drawImage(imageUserDrawn, 0, 0, gridSizeCorrected, gridSizeCorrected, this);
 
 		
