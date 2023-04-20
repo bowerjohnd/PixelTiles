@@ -64,6 +64,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		
 		setOpaque(false);
 		
+		setVisible(true);
 	}
 	
 	@Override
@@ -226,7 +227,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		
 		mouseClicked = true;
 		repaint();
-		PixelTilesMain.panePreview.repaint();
+		PanelTools.panePreview.repaint();
 
 	}
 
@@ -235,7 +236,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		
 		mousePressed = true;
 		repaint();
-		PixelTilesMain.panePreview.repaint();
+		PanelTools.panePreview.repaint();
 		
 	}
 
@@ -272,7 +273,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		mouseLoc.y = y;
 		
 		repaint();
-		PixelTilesMain.panePreview.repaint();
+		PanelTools.panePreview.repaint();
 		
 	}
 

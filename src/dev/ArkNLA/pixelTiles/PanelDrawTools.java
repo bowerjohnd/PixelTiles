@@ -28,7 +28,7 @@ public class PanelDrawTools extends JPanel implements ActionListener{
 			// Clear image button, sets draw panel boolean to true
 			PixelTilesMain.paneDraw.clearImage();
 			PixelTilesMain.paneDraw.repaint();
-			PixelTilesMain.panePreview.repaint();
+			PanelTools.panePreview.repaint();
 		}
 	}
 

@@ -37,14 +37,12 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	private int intOpacity = 255;	//
 	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
 	
-	private int intSlideAllValue = 0;
-	
 	// THIS border layout NORTH
 	
 	private JPanel paneNorth = new JPanel();
 	private JPanel paneColorSelected = new JPanel();
 	private JPanel paneColorSelectedPreview = new JPanel();
-	private JPanel panePreview, panePreviewLeft, panePreviewRight; 			// initialized in constructor
+	private JPanel panePreview; 			// initialized in constructor
 	private JPanel paneColorSelectedText = new JPanel();
 	private JPanel paneRGB = new JPanel();
 	private JPanel panePresetColors = new JPanel();
@@ -102,36 +100,13 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		    }
 		};
 		
-		panePreviewLeft = new JPanel()
-		{		
-		    protected void paintComponent(Graphics g)
-		    {
-		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
-		        super.paintComponent(g);
-		    }
-		};
-		
-		panePreviewRight = new JPanel()
-		{
-		    protected void paintComponent(Graphics g)
-		    {
-		        g.setColor( getBackground() );
-		        g.fillRect(0, 0, getWidth(), getHeight());
-		        super.paintComponent(g);
-		    }
-		};
 		
 		panePreview.addMouseListener(this);
 		panePreview.setBackground(PixelTilesMain.userColor);
-		panePreviewLeft.setBackground(PixelTilesMain.userColorLeft);
-		panePreviewRight.setBackground(PixelTilesMain.userColorRight);		
 		
 		paneColorSelectedPreview.setPreferredSize(new Dimension(100, 100));
 		paneColorSelectedPreview.setLayout(new BorderLayout());
 		paneColorSelectedPreview.add(panePreview, BorderLayout.SOUTH);
-		paneColorSelectedPreview.add(panePreviewLeft, BorderLayout.WEST);
-		paneColorSelectedPreview.add(panePreviewRight, BorderLayout.EAST);
 		
 		paneColorSelected.add(paneColorSelectedPreview, BorderLayout.NORTH);
 		
@@ -664,12 +639,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			PixelTilesMain.userColorLeft = colorSelected;
-		}
-		if (e.getButton() == MouseEvent.BUTTON2) {
-			PixelTilesMain.userColorRight = colorSelected;
-		}
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 public class PixelTilesMain implements ActionListener {
@@ -43,22 +44,29 @@ public class PixelTilesMain implements ActionListener {
 	private int frameW = screenWidth/5*3;
 	private int frameH = screenHeight/5*3;
 	
-	// GUI frame and panels
+	/*
+	 * 		GUI components
+	 */
 	
-	JFrame frame = new JFrame();
+	JFrame frame = new JFrame();	
+	JTabbedPane tabbedPane = new JTabbedPane();
 	
-	JPanel paneTitleBar = new JPanel();									// Border layout NORTH
-	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// Border layout WEST
-	static PanelDraw paneDraw = new PanelDraw();						// Border layout CENTER
-	JPanel paneTools = new JPanel();									// Border layout EAST
-	static PanelPreview panePreview = new PanelPreview();						// paneTools layout NORTH
-	PanelDrawTools paneDrawTools = new PanelDrawTools();						// paneTools layout CENTER
-	PanelSave paneSave = new PanelSave();										// paneTools layout SOUTH
-	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();				// Border layout SOUTH
+	// Tab panels
+	
+	JPanel tabPaneTileFactory = new JPanel();
+	JPanel tabPaneFavoriteColors = new JPanel();
+	
+	// Tile Factory components
+	
+	JPanel paneTitleBar = new JPanel();									// TileFactory Border layout NORTH
+	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// TileFactory Border layout WEST
+	static PanelDraw paneDraw = new PanelDraw();						// TileFactory Border layout CENTER
+	PanelTools paneTools = new PanelTools();							// TileFactory Border layout EAST
+	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();				// TileFactory Border layout SOUTH
 	
 	// GUI components
 	
-	static JLabel labelDevMouseGridInfo;
+	static JLabel labelDevMouseGridInfo = new JLabel("");
 	JLabel labelTitle = new JLabel("Pixel Tiles by John Bower");
 	JButton buttonExit = new JButton("Exit");
 	
@@ -66,18 +74,16 @@ public class PixelTilesMain implements ActionListener {
 	
 	public static int userGridSize = 1;
 	public static Color userColor;
-	public static Color userColorLeft;
-	public static Color userColorRight;
 	public static Image userImage;
 	
 	PixelTilesMain() {
 		
+		frame.setLayout(new BorderLayout());
+		tabbedPane.setBounds(0, 0, frame.getWidth(), frame.getHeight());
 		// User selections default
 		
 		userGridSize = paneSizeSelect.getGrid();
 		userColor = Color.black;
-		userColorLeft = Color.black;
-		userColorRight = Color.white;
 
 		/*
 		*	 Title bar pane setup	FRAME NORTH
@@ -85,57 +91,39 @@ public class PixelTilesMain implements ActionListener {
 		
 		paneTitleBar.setLayout(new BorderLayout());
 		
+		//buttonMenu.setHorizontalAlignment(SwingConstants.LEFT);
 		labelTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		buttonExit.setHorizontalAlignment(SwingConstants.RIGHT);
 		buttonExit.addActionListener(this);
 		
 		paneTitleBar.setBackground(Color.LIGHT_GRAY);
+		//paneTitleBar.add(buttonMenu, BorderLayout.WEST);
 		paneTitleBar.add(labelTitle, BorderLayout.CENTER);
 		paneTitleBar.add(buttonExit, BorderLayout.EAST);
 		
 		// DEV info
-		labelDevMouseGridInfo = new JLabel("DEV");
 		//paneTitleBar.add(labelDevMouseGridInfo, BorderLayout.WEST);
 		
 		frame.add(paneTitleBar, BorderLayout.NORTH);
 		
 		/*
-		*	 Color select pane setup	FRAME WEST
+		*		Tile Factory Tab
 		*/
+		tabPaneTileFactory.setLayout(new BorderLayout());
 		
-		frame.add(paneColorSelect, BorderLayout.WEST);
+		tabPaneTileFactory.add(paneColorSelect, BorderLayout.WEST);
+		tabPaneTileFactory.add(paneDraw, BorderLayout.CENTER);
+		tabPaneTileFactory.add(paneTools, BorderLayout.EAST);
+		tabPaneTileFactory.add(paneSizeSelect, BorderLayout.SOUTH);
 		
 		/*
-		*	 Draw pane setup	FRAME CENTER
-		*/
+		 *		Favorite Colors Tab
+		 */
 		
-		frame.add(paneDraw, BorderLayout.CENTER);
+		// Add tabs to tabbedPane
 		
-		/*
-		*	 Tools pane setup	FRAME EAST
-		*/
-		
-		paneTools.setLayout(new BorderLayout());			
-		panePreview.setPreferredSize(new Dimension(250,305));
-		
-		paneTools.add(panePreview, BorderLayout.NORTH);
-		
-		// Possible feature with mirror splits, clear image, etc.
-		
-		paneTools.add(paneDrawTools, BorderLayout.CENTER);
-		
-		// paneTools.add(paneDrawTools, BorderLayout.CENTER);
-		
-		paneSave.setPreferredSize(new Dimension(250,250));
-		paneTools.add(paneSave, BorderLayout.SOUTH);
-		
-		frame.add(paneTools, BorderLayout.EAST);
-		
-		/*
-		*	 Size select pane setup		FRAME SOUTH
-		*/
-		
-		frame.add(paneSizeSelect, BorderLayout.SOUTH);
+		tabbedPane.addTab("Tile Factory", tabPaneTileFactory);
+		tabbedPane.addTab("Favorite Colors", tabPaneFavoriteColors);
 		
 		// Frame properties
 
@@ -144,14 +132,14 @@ public class PixelTilesMain implements ActionListener {
 		//frame.setUndecorated(true);		
 		//frame.setResizable(false);
 		//buttonExit.setVisible(true);
+		buttonExit.setVisible(false);
 		  
-		 
+		frame.add(tabbedPane, BorderLayout.CENTER);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(frameX, frameY, frameW, frameH);
 		frame.setTitle("Pixel Tiles by John Bower");
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
-		buttonExit.setVisible(false);
 		frame.setResizable(true);			
 		frame.setVisible(true);
 
