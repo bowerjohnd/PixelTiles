@@ -26,6 +26,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class PanelSave extends JPanel implements ActionListener, KeyListener{
 
+	/*
+	 * 		4/24/2023
+	 * 		Known Bugs:		
+	 * 		
+	 * 		TODO: 			- Clean up code after revamp, if needed.
+	 * 								
+	 */
+	
 	private JLabel statusMessage = new JLabel("Save Image:");
 	private JButton buttonSaveAs = new JButton("Save As");
 	private BufferedImage userImage;

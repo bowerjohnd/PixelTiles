@@ -14,14 +14,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class PanelColorSelect extends JPanel implements ActionListener, KeyListener, ChangeListener, MouseListener{
-
-	private static final long serialVersionUID = 1L;
-
 	/*
-		TODO:
-				- slideAll: get solved code from CPS261 drawing project
-				- Brightness adjustment buttons
+	 * 		4/24/2023
+	 * 		Known Bugs:		
+	 * 		
+	 * 		TODO: 			- Get HSB working OR reduce to only Brightness
+	 * 								
 	 */
+	private static final long serialVersionUID = 1L;
 	
 	// THIS generic
 	

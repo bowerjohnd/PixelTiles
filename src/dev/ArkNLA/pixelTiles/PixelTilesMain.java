@@ -20,15 +20,18 @@ import javax.swing.SwingConstants;
 public class PixelTilesMain implements ActionListener {
 	
 	/*
-	 * 		4/4/2023
-	 * 		Known Bugs:		- see PanelDraw
+	 * 		4/24/2023
+	 * 		Known Bugs:		- 
 	 * 		
 	 * 		TODO: 			- get transparency working
 	 * 						- clearing of image to transparency (currently white wash)
 	 * 						- Tabs: favorite color schemes, combine tiles to one image, image edits
-	 * 						- Change PanelSizeSelect to drop down of multiples (3,6,9.. 5,10,15... 10,20,30...)
 	 * 						- Possibly add JMenuBar?
 	 * 						- Add more draw tools
+	 * 
+	 * 						* make favorites into use buttons, provide the deletion to favorites tab
+	 * 						* favorites tab will allow default/custom grouping favorites: no-group, tree, dirt, defRed, etc.
+	 * 					
 	 * 
 	 */
 	
