@@ -30,8 +30,10 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	private int intGreen = 0;		// Default color: black
 	private int intBlue = 0;		//
 	private int intOpacity = 255;	//
+	private int intHue = 0;
+	private int intSaturation = 0;
+	private int intBrightness = 0;
 	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
-	private int intShade = 500;
 	
 	// THIS border layout NORTH
 	
@@ -41,9 +43,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	private JPanel paneColorSelectedText = new JPanel();
 	private JPanel paneRGB = new JPanel();
 	private JPanel panePresetColors = new JPanel();
-	private JLabel labelRed, labelGreen, labelBlue, labelAll, labelOpacity, labelRGB, labelHEX;
-	private JTextField textRed, textGreen, textBlue, textOpacity, textRGB, textHEX;
-	private JSlider slideRed, slideGreen, slideBlue, slideAll, slideOpacity;
+	private JLabel labelRed, labelGreen, labelBlue, labelHue, labelSaturation, labelBrightness, labelOpacity, labelRGB, labelHEX;
+	private JTextField textRed, textGreen, textBlue, textHue, textSaturation, textBrightness, textOpacity, textRGB, textHEX;
+	private JSlider slideRed, slideGreen, slideBlue, slideHue, slideSaturation, slideBrightness, slideOpacity;
 	private JButton buttonRGBcopy, buttonHEXcopy, buttonSaveFavorite,
 					butRed, butGreen, butBlue, butYellow, butOrange, butBlack,
 					butGray, butWhite;
@@ -246,22 +248,63 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		c.fill = GridBagConstraints.HORIZONTAL;
 		paneRGB.add(slideBlue, c);
 		
-		// All adjustment
-		labelAll = new JLabel("Shade:");
-		labelAll.setHorizontalAlignment(SwingConstants.RIGHT);
-		slideAll = new JSlider(0, 1000, 500);
-		slideAll.addChangeListener(this);
+		// Hue adjustment
+		labelHue = new JLabel("Hue:");
+		labelHue.setHorizontalAlignment(SwingConstants.LEFT);
+		textHue = new JTextField(3);
+		textHue.addKeyListener(this);
+		slideHue = new JSlider(0, 255, 0);
+		slideHue.addChangeListener(this);
 		
 		c.gridy = 3;
 		c.gridx = 0;
-		c.gridwidth = 2;
-		paneRGB.add(labelAll, c);
+		paneRGB.add(labelHue, c);
+		c.gridy = 3;
+		c.gridx = 1;
+		paneRGB.add(textHue, c);
 		c.gridy = 3;
 		c.gridx = 2;
-		c.gridwidth = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;	
-		paneRGB.add(slideAll, c);
+		paneRGB.add(slideHue, c);
+
+		// Saturation adjustment
+		labelSaturation = new JLabel("Sat.:");
+		labelSaturation.setHorizontalAlignment(SwingConstants.LEFT);
+		textSaturation = new JTextField(3);
+		textSaturation.addKeyListener(this);
+		slideSaturation = new JSlider(0, 255, 0);
+		slideSaturation.addChangeListener(this);
 		
+		c.gridy = 4;
+		c.gridx = 0;
+		paneRGB.add(labelSaturation, c);
+		c.gridy = 4;
+		c.gridx = 1;
+		paneRGB.add(textSaturation, c);
+		c.gridy = 4;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;	
+		paneRGB.add(slideSaturation, c);
+
+		// Brightness adjustment
+		labelBrightness = new JLabel("Bri.:");
+		labelBrightness.setHorizontalAlignment(SwingConstants.LEFT);
+		textBrightness = new JTextField(3);
+		textBrightness.addKeyListener(this);
+		slideBrightness = new JSlider(0, 255, 0);
+		slideBrightness.addChangeListener(this);
+		
+		c.gridy = 5;
+		c.gridx = 0;
+		paneRGB.add(labelBrightness, c);
+		c.gridy = 5;
+		c.gridx = 1;
+		paneRGB.add(textBrightness, c);
+		c.gridy = 5;
+		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;	
+		paneRGB.add(slideBrightness, c);
+
 		
 		// Transparency adjustment		
 		labelOpacity = new JLabel("O:");
@@ -274,17 +317,17 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		buttonSaveFavorite = new JButton("Save");
 		buttonSaveFavorite.addActionListener(this);
 		
-		c.gridy = 4;
+		c.gridy = 6;
 		c.gridx = 0;
 		paneRGB.add(labelOpacity, c);
-		c.gridy = 4;
+		c.gridy = 6;
 		c.gridx = 1;
 		paneRGB.add(textOpacity, c);
-		c.gridy = 4;
+		c.gridy = 6;
 		c.gridx = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		paneRGB.add(slideOpacity, c);
-		c.gridy = 5;
+		c.gridy = 7;
 		c.gridx = 2;
 		paneRGB.add(buttonSaveFavorite, c);
 		
@@ -317,13 +360,19 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		slideGreen.setValue(intGreen);
 		slideBlue.setValue(intBlue);
 		slideOpacity.setValue(intOpacity);
+		slideHue.setValue(intHue);
+		slideSaturation.setValue(intSaturation);
+		slideBrightness.setValue(intBrightness);
 		
 		textRed.setText(String.valueOf(intRed));
 		textGreen.setText(String.valueOf(intGreen));
 		textBlue.setText(String.valueOf(intBlue));
 		textOpacity.setText(String.valueOf(intOpacity));
+		textHue.setText(String.valueOf(intHue));
+		textSaturation.setText(String.valueOf(intSaturation));
+		textBrightness.setText(String.valueOf(intBrightness));
 		
-		setText();
+		setSlidersAndTexts();
 		setDrawColor();
 	}
 
@@ -414,7 +463,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		}
 
 		setSlidersAndTexts();
-		setText();
 		setDrawColor();
 	}
 
@@ -449,7 +497,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.red.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butGreen) {
@@ -458,7 +505,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.green.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butBlue) {
@@ -467,7 +513,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.blue.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butYellow) {
@@ -476,7 +521,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.yellow.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butOrange) {
@@ -485,7 +529,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.orange.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butBlack) {
@@ -494,7 +537,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.black.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butGray) {
@@ -503,7 +545,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.gray.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		if (source == butWhite) {
@@ -512,7 +553,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			intBlue = Color.white.getBlue();
 			
 			setSlidersAndTexts();
-			setText();
 			setDrawColor();
 		}
 		
@@ -573,15 +613,41 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 			
 		}
 
-		if (source == slideAll) {
-
-			int v = slideAll.getValue();
+		if (source == slideHue) {
 			
+			int v = slideHue.getValue();
 			
+			intHue = v;				
+			textHue.setText(String.valueOf(v));
 			
 		}
 		
-		setText();
+		if (source == slideSaturation) {
+			
+			int v = slideSaturation.getValue();
+			
+			intSaturation = v;			
+			textSaturation.setText(String.valueOf(v));
+			
+		}
+		
+		if (source == slideBrightness) {
+			
+			int v = slideBrightness.getValue();
+			
+			intBrightness = v;			
+			textBrightness.setText(String.valueOf(v));
+			
+		}
+		
+	    int rgb = Color.HSBtoRGB(intHue, intSaturation, intBrightness);
+	    int inRed = (rgb >> 16) & 0xFF;
+	    int inGreen = (rgb >> 8) & 0xFF;
+	    int inBlue = rgb & 0xFF;
+
+	    System.out.println("|" + inRed + "|" + inGreen + "|" + inBlue + "|");
+	    
+		setSlidersAndTexts();
 		setDrawColor();
 	}
 	
@@ -591,21 +657,34 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		PixelTilesMain.userColor = colorSelected;
 	}
 	
-	private void setText() {
-		textRGB.setText(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
-		textHEX.setText("#" + Integer.toHexString(intRed) + Integer.toHexString(intGreen) 
-							+ Integer.toHexString(intBlue) + Integer.toHexString(intOpacity));
-	}
-	
 	private void setSlidersAndTexts() {
+		
+		float[] temp = new float[3];
+		Color.RGBtoHSB(intRed, intGreen, intBlue, temp);
+		intHue = (int)(temp[0]*255);
+		intSaturation = (int)(temp[1]*255);
+		intBrightness = (int)(temp[2]*255);
+		
 		slideRed.setValue(intRed);
 		slideGreen.setValue(intGreen);
 		slideBlue.setValue(intBlue);
 		
+		slideHue.setValue(intHue);
+		slideSaturation.setValue(intSaturation);
+		slideBrightness.setValue(intBrightness);
+		
 		textRed.setText(String.valueOf(intRed));
 		textGreen.setText(String.valueOf(intGreen));
 		textBlue.setText(String.valueOf(intBlue));
-	}
+		
+		textHue.setText(String.valueOf(intHue));
+		textSaturation.setText(String.valueOf(intSaturation));
+		textBrightness.setText(String.valueOf(intBrightness));
+		
+		textRGB.setText(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
+		textHEX.setText("#" + Integer.toHexString(intRed) + Integer.toHexString(intGreen) 
+							+ Integer.toHexString(intBlue) + Integer.toHexString(intOpacity));
+		}
 	
 	public void setColorToFavorite() {
 		intRed = PixelTilesMain.userColor.getRed();
@@ -614,7 +693,6 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		intOpacity = PixelTilesMain.userColor.getAlpha();
 		
 		setSlidersAndTexts();
-		setText();
 		setDrawColor();		
 	}
 
@@ -648,7 +726,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		
 	}
 	
-	public void setColor(int r, int g, int b, int a) {
+	public void setColorFromOutside(int r, int g, int b, int a) {
 		intRed = r;
 		intGreen = g;
 		intBlue = b;

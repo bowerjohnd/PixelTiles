@@ -258,7 +258,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 			int g = (c>>8) & 0xff;
 			int b = c & 0xff;
 			
-			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
+			PixelTilesMain.paneColorSelect.setColorFromOutside(r, g, b, a);	
 		}
 		
 	}
