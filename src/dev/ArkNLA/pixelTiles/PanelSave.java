@@ -1,8 +1,10 @@
 package dev.ArkNLA.pixelTiles;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -13,50 +15,56 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class PanelSave extends JPanel implements ActionListener, KeyListener{
 
-	private JTextField textFilename = new JTextField(10);
-	private JLabel statusMessage = new JLabel("Enter filename to save.");
-	private final JLabel labelFilename = new JLabel("Filename:");
-	private JButton buttonLoadImage = new JButton("Load PNG Image");
-	private JButton buttonSaveImage = new JButton("Save PNG Image");
+	private JLabel statusMessage = new JLabel("Save Image:");
+	private JButton buttonSaveAs = new JButton("Save As");
 	private BufferedImage userImage;
 	
-	private int imageSize = 250;
-	
+	private int imageSize = 250;	
 	private JLabel labelImageSize;
-	private JTextField textImageSize = new JTextField(10);
+	private JTextField textImageSize = new JTextField(3);
+	
+	private File workingDirectory;
+	String stringSelectedFile = "";
 	
 	private JPanel paneSaveImage = new JPanel();
 	
 	PanelSave() {
 		
-		textFilename.addKeyListener(this);
-		buttonLoadImage.addActionListener(this);
-		buttonSaveImage.addActionListener(this);
-		buttonSaveImage.setEnabled(false);
+		buttonSaveAs.addActionListener(this);
 		
-		labelImageSize = new JLabel("Image Size: " + imageSize + "x" + imageSize);
+		labelImageSize = new JLabel("Image Size: ");
+		labelImageSize.setHorizontalAlignment(SwingConstants.LEFT);
 		textImageSize.addKeyListener(this);
+		textImageSize.setHorizontalAlignment(SwingConstants.RIGHT);
 		textImageSize.setText(String.valueOf(imageSize));
 		
 		setLayout(new BorderLayout());
-
-		//add(buttonLoadImage, BorderLayout.NORTH);
-
-		paneSaveImage.setSize(125,100);
-		paneSaveImage.setLayout(new GridLayout(5,1));
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		paneSaveImage.add(labelImageSize);
-		paneSaveImage.add(textImageSize);
-		paneSaveImage.add(labelFilename);
-		paneSaveImage.add(textFilename);		
-		paneSaveImage.add(buttonSaveImage);
+		paneSaveImage.setSize(125,100);
+		paneSaveImage.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.gridy = 0;
+		c.gridx = 0;
+		paneSaveImage.add(labelImageSize, c);
+		c.gridy = 1;
+		c.gridx = 0;
+		paneSaveImage.add(textImageSize, c);
+		c.gridy = 2;
+		c.gridx = 0;
+		paneSaveImage.add(buttonSaveAs, c);
 		
 		add(statusMessage, BorderLayout.NORTH);
 		add(paneSaveImage, BorderLayout.SOUTH);
@@ -66,16 +74,39 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		
-		if (source == buttonLoadImage) {
+		if (source == buttonSaveAs) {
 			
-			// Feature added later
-		
+			showSaveAsDialog();
+		}
+	}
+	
+	private void showSaveAsDialog() {
+
+		// If images directory doesn't exist, create it
+		if (workingDirectory == null) {
+			workingDirectory = new File("images/");
+			if (!workingDirectory.exists()){
+			    workingDirectory.mkdirs();
+			}
 		}
 		
-		if (source == buttonSaveImage) {
-			
-			saveImage();
-		}
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(workingDirectory);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+ 
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PNG Image", "png"));
+ 
+        fileChooser.setAcceptAllFileFilterUsed(true);
+ 
+        int result = fileChooser.showSaveDialog(this);
+ 
+        if (result == JFileChooser.APPROVE_OPTION) {
+        	workingDirectory = fileChooser.getCurrentDirectory();
+            File selectedFile = fileChooser.getSelectedFile();
+            stringSelectedFile = selectedFile.getAbsolutePath();
+            
+            saveImage();
+        }
 	}
 	
 	private void saveImage() {
@@ -85,32 +116,26 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 			userImage = (BufferedImage) PixelTilesMain.userImage;
 
 			userImage = (BufferedImage) getScaledImage(userImage, imageSize, imageSize);
-
 			
-			if (textFilename.getText().length() > 0) {
+			if (stringSelectedFile.length() > 0) {
 				
-				// If images directory doesn't exist, create it
-				File dir = new File("images/");
-				if (!dir.exists()){
-				    dir.mkdirs();
-				}
 				
 				// If file name has already been used, append number to it.
-				File img = new File("images/" + textFilename.getText() + ".png");
+				File img = new File(stringSelectedFile + ".png");
 				if (img.exists()) {
 					int i = 1;
 					while (img.exists()){
-						img = new File("images/" + textFilename.getText() + "(" + i + ").png");
+						img = new File(stringSelectedFile + "(" + i + ").png");
 						i++;
 					}
 					
-					textFilename.setText(textFilename.getText() + "(" + (i-1) + ")");
+					stringSelectedFile = stringSelectedFile + "(" + (i-1) + ")";
 				}
 				
 				try {
-					ImageIO.write(userImage, "PNG", new File("images/" + textFilename.getText() + ".png"));
-					statusMessage.setText("Image " + textFilename.getText() + ".png has been saved.");
-					textFilename.setText("");
+					ImageIO.write(userImage, "PNG", new File(stringSelectedFile + ".png"));
+					statusMessage.setText("Image has been saved.");
+					stringSelectedFile = "";
 				} catch (Exception ex) {
 					statusMessage.setText("File not saved. File.");
 					ex.printStackTrace();
@@ -144,22 +169,14 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 
 		Object source = e.getSource();
 		
-		if (source == textFilename) {
-			if (textFilename.getText().length() > 0) {
-				buttonSaveImage.setEnabled(true);
-			} else {
-				buttonSaveImage.setEnabled(false);
-			}
-		}
-		
 		if (source == textImageSize) {
 			try {
 				imageSize = Integer.parseInt(textImageSize.getText());
 				labelImageSize.setText("Image Size: " + imageSize + "x" + imageSize);
 			}
 			catch (Exception ex) {
-				imageSize = 250;
-				labelImageSize.setText("Image Size: " + imageSize + "x" + imageSize);
+				textImageSize.setText(String.valueOf(imageSize));
+				labelImageSize.setText("Image Size: " + imageSize + "x" +imageSize);
 			}
 			
 		}

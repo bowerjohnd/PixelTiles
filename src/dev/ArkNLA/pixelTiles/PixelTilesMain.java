@@ -23,8 +23,7 @@ public class PixelTilesMain implements ActionListener {
 	 * 		4/4/2023
 	 * 		Known Bugs:		- see PanelDraw
 	 * 		
-	 * 		TODO: 			- fix color selection opacity anomaly bug
-	 * 						- get transparency working
+	 * 		TODO: 			- get transparency working
 	 * 						- clearing of image to transparency (currently white wash)
 	 * 						- Tabs: favorite color schemes, combine tiles to one image, image edits
 	 * 						- Change PanelSizeSelect to drop down of multiples (3,6,9.. 5,10,15... 10,20,30...)

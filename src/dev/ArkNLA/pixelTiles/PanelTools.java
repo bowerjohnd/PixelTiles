@@ -24,7 +24,6 @@ public class PanelTools extends JPanel{
 		
 		// paneTools.add(paneDrawTools, BorderLayout.CENTER);
 		
-		paneSave.setPreferredSize(new Dimension(250,250));
 		add(paneSave, BorderLayout.SOUTH);
 	}
 }

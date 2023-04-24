@@ -645,7 +645,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	    int inGreen = (rgb >> 8) & 0xFF;
 	    int inBlue = rgb & 0xFF;
 
-	    System.out.println("|" + inRed + "|" + inGreen + "|" + inBlue + "|");
+	    //System.out.println("|" + inRed + "|" + inGreen + "|" + inBlue + "|");
 	    
 		setSlidersAndTexts();
 		setDrawColor();
