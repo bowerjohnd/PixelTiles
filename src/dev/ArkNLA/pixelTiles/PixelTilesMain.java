@@ -23,12 +23,13 @@ public class PixelTilesMain implements ActionListener {
 	 * 		4/4/2023
 	 * 		Known Bugs:		- see PanelDraw
 	 * 		
-	 * 		TODO: 			- fix bugs
-	 * 						- see PanelDraw
-	 * 						- see PanelPreview
-	 * 						- add clearing of image
-	 * 						- Saving image to file in custom sizes
-	 * 						- Considering expanding frame to tabs to paint saved images to grid/image
+	 * 		TODO: 			- fix color selection opacity anomaly bug
+	 * 						- get transparency working
+	 * 						- clearing of image to transparency (currently white wash)
+	 * 						- Tabs: favorite color schemes, combine tiles to one image, image edits
+	 * 						- Change PanelSizeSelect to drop down of multiples (3,6,9.. 5,10,15... 10,20,30...)
+	 * 						- Possibly add JMenuBar?
+	 * 						- Add more draw tools
 	 * 
 	 */
 	
@@ -62,11 +63,10 @@ public class PixelTilesMain implements ActionListener {
 	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// TileFactory Border layout WEST
 	static PanelDraw paneDraw = new PanelDraw();						// TileFactory Border layout CENTER
 	PanelTools paneTools = new PanelTools();							// TileFactory Border layout EAST
-	PanelSizeSelect paneSizeSelect = new PanelSizeSelect();				// TileFactory Border layout SOUTH
+	PanelGridSelect paneSizeSelect = new PanelGridSelect();				// TileFactory Border layout SOUTH
 	
 	// GUI components
 	
-	static JLabel labelDevMouseGridInfo = new JLabel("");
 	JLabel labelTitle = new JLabel("Pixel Tiles by John Bower");
 	JButton buttonExit = new JButton("Exit");
 	
@@ -91,19 +91,14 @@ public class PixelTilesMain implements ActionListener {
 		
 		paneTitleBar.setLayout(new BorderLayout());
 		
-		//buttonMenu.setHorizontalAlignment(SwingConstants.LEFT);
 		labelTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		buttonExit.setHorizontalAlignment(SwingConstants.RIGHT);
 		buttonExit.addActionListener(this);
 		
 		paneTitleBar.setBackground(Color.LIGHT_GRAY);
-		//paneTitleBar.add(buttonMenu, BorderLayout.WEST);
 		paneTitleBar.add(labelTitle, BorderLayout.CENTER);
 		paneTitleBar.add(buttonExit, BorderLayout.EAST);
-		
-		// DEV info
-		//paneTitleBar.add(labelDevMouseGridInfo, BorderLayout.WEST);
-		
+				
 		frame.add(paneTitleBar, BorderLayout.NORTH);
 		
 		/*

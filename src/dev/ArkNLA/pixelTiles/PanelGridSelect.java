@@ -8,7 +8,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
-public class PanelSizeSelect extends JPanel implements ActionListener, KeyListener{
+public class PanelGridSelect extends JPanel implements ActionListener, KeyListener{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -31,7 +31,7 @@ public class PanelSizeSelect extends JPanel implements ActionListener, KeyListen
 	 * 								
 	 */
 	
-	PanelSizeSelect() {
+	PanelGridSelect() {
 		
 		labelGrid1 = new JLabel(size1value + "x" + size1value);
 		labelGrid2 = new JLabel(size2value + "x" + size2value);

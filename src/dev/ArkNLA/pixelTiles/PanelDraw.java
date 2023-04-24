@@ -215,28 +215,51 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 			pane.drawLine(line, 0, line, gridSizeCorrected);
 			line += step;
 		}
-		
-		// DEVELOPMENT: Show sizes
-		PixelTilesMain.labelDevMouseGridInfo.setText("Rows: " + step + "/" + gridSizeCorrected + "/ mX:" + mouseLoc.x
-									+ " ---- Cols: " + step + "/" + gridSizeCorrected + "/ mY:" + mouseLoc.y);
 
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
-		mouseClicked = true;
-		repaint();
-		PanelTools.panePreview.repaint();
-
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			mouseClicked = true;
+			repaint();
+			PanelTools.panePreview.repaint();
+		}
+		
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			int x = e.getX();
+			int y = e.getY();
+			int c = imageUserDrawn.getRGB(x, y);
+			int a = (c>>24) & 0xff;
+			int r = (c>>16) & 0xff;
+			int g = (c>>8) & 0xff;
+			int b = c & 0xff;
+			
+			PixelTilesMain.userColor = new Color(r, g, b, a);
+		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
-		mousePressed = true;
-		repaint();
-		PanelTools.panePreview.repaint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			mousePressed = true;
+			repaint();
+			PanelTools.panePreview.repaint();
+		}
+		
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			int x = e.getX();
+			int y = e.getY();
+			int c = imageUserDrawn.getRGB(x, y);
+			int a = (c>>24) & 0xff;
+			int r = (c>>16) & 0xff;
+			int g = (c>>8) & 0xff;
+			int b = c & 0xff;
+			
+			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
+		}
 		
 	}
 

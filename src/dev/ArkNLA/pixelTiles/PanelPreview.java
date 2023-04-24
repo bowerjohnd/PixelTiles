@@ -16,10 +16,10 @@ public class PanelPreview extends JPanel implements ChangeListener{
 	
 	/*
 	 * 		4/4/2023
-	 * 		Known Bugs:		none.
+	 * 		Known Bugs:		-
 	 * 		
-	 * 		TODO: 			- Add resize buttons below preview image.
-	 * 						- Add transparency indicator.
+	 * 		TODO: 			-
+	 * 						
 	 * 								
 	 */
 	
@@ -35,9 +35,6 @@ public class PanelPreview extends JPanel implements ChangeListener{
 		paneImage = new JPanel()
 		{
 			public void paint (Graphics g) {
-				
-				g.setColor(Color.LIGHT_GRAY);
-				g.fillRect(0,0,250,250);
 								
 				Image image = PixelTilesMain.userImage;
 

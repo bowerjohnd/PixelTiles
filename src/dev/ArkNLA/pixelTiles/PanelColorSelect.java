@@ -19,30 +19,25 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 
 	/*
 		TODO:
-				- Color selected shown on top of pane
-				- User clicks given color, selected color changes
-				- R, G, B text fields with adjustment slides
-				- Brightness adjustment slides
-				- Transparency adjustment slide
-				- Copy to clipboard RGB / HEX
-				- RGB / HEX labels with copy to clipboard buttons
+				- slideAll: get solved code from CPS261 drawing project
+				- Brightness adjustment buttons
 	 */
 	
 	// THIS generic
 	
 	private int pY;
-	private int intRed = 0;		//
+	private int intRed = 0;			//
 	private int intGreen = 0;		// Default color: black
 	private int intBlue = 0;		//
 	private int intOpacity = 255;	//
 	private Color colorSelected = new Color(intRed, intGreen, intBlue, intOpacity);
+	private int intShade = 500;
 	
 	// THIS border layout NORTH
 	
 	private JPanel paneNorth = new JPanel();
 	private JPanel paneColorSelected = new JPanel();
-	private JPanel paneColorSelectedPreview = new JPanel();
-	private JPanel panePreview; 			// initialized in constructor
+	private JPanel paneColorSelectedPreview;
 	private JPanel paneColorSelectedText = new JPanel();
 	private JPanel paneRGB = new JPanel();
 	private JPanel panePresetColors = new JPanel();
@@ -90,23 +85,20 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		// 		- Get background color and paint a rectangle over it with opacity
 		//		* Source: https://tips4java.wordpress.com/2009/05/31/backgrounds-with-transparency/
 		
-		panePreview = new JPanel()
+		paneColorSelectedPreview = new JPanel()
 		{
 		    protected void paintComponent(Graphics g)
 		    {
+		    	g.setColor(Color.WHITE);
+		    	g.fillRect(0, 0, getWidth(), getHeight());
 		        g.setColor( getBackground() );
 		        g.fillRect(0, 0, getWidth(), getHeight());
 		        super.paintComponent(g);
 		    }
 		};
 		
-		
-		panePreview.addMouseListener(this);
-		panePreview.setBackground(PixelTilesMain.userColor);
-		
 		paneColorSelectedPreview.setPreferredSize(new Dimension(100, 100));
 		paneColorSelectedPreview.setLayout(new BorderLayout());
-		paneColorSelectedPreview.add(panePreview, BorderLayout.SOUTH);
 		
 		paneColorSelected.add(paneColorSelectedPreview, BorderLayout.NORTH);
 		
@@ -255,9 +247,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		paneRGB.add(slideBlue, c);
 		
 		// All adjustment
-		labelAll = new JLabel("All:");
+		labelAll = new JLabel("Shade:");
 		labelAll.setHorizontalAlignment(SwingConstants.RIGHT);
-		slideAll = new JSlider(0,255,1);
+		slideAll = new JSlider(0, 1000, 500);
 		slideAll.addChangeListener(this);
 		
 		c.gridy = 3;
@@ -584,18 +576,9 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		if (source == slideAll) {
 
 			int v = slideAll.getValue();
-
-			intRed = v;
-			intGreen = v;
-			intBlue = v;
 			
-			slideRed.setValue(v);
-			slideGreen.setValue(v);
-			slideBlue.setValue(v);
 			
-			textRed.setText(String.valueOf(v));
-			textGreen.setText(String.valueOf(v));
-			textBlue.setText(String.valueOf(v));
+			
 		}
 		
 		setText();
@@ -663,5 +646,15 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setColor(int r, int g, int b, int a) {
+		intRed = r;
+		intGreen = g;
+		intBlue = b;
+		intOpacity = a;
+		
+		setDrawColor();
+		setSlidersAndTexts();
 	}
 }
