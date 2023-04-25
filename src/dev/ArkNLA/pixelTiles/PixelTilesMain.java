@@ -20,8 +20,8 @@ import javax.swing.SwingConstants;
 public class PixelTilesMain implements ActionListener {
 	
 	/*
-	 * 		4/24/2023
-	 * 		Known Bugs:		- 
+	 * 		4/25/2023
+	 * 		Known Bugs:		- Problems with duplication
 	 * 		
 	 * 		TODO: 			- get transparency working
 	 * 						- clearing of image to transparency (currently white wash)

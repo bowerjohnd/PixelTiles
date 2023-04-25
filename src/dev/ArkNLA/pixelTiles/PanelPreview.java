@@ -42,23 +42,43 @@ public class PanelPreview extends JPanel implements ChangeListener{
 					
 					image = PixelTilesMain.userImage.getScaledInstance(scale, scale, Image.SCALE_DEFAULT);
 					
-					// Paint tiny grid behind image preview to show opacity
+					// Paint squares behind image preview to show transparency
 					
-					for (int i = 0; i < 250; i++) {
-						
-						if (i%2 == 0) {
-							g.setColor(Color.WHITE);
-							g.drawLine(i, 0, i, 250);
-							g.drawLine(0, i, 250, i);				
-						} else {
-							g.setColor(Color.DARK_GRAY);
-							g.drawLine(i, 0, i, 250);
-							g.drawLine(0, i, 250, i);
-						}
+					g.setColor(Color.WHITE);
+					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+					
+					g.setColor(Color.LIGHT_GRAY);
+					
+					int transpWidth = 0;
+					int transpHeight = 0;
 
+					while (transpHeight < this.getHeight()) {
+						
+						while (transpWidth < this.getWidth()) {
+
+							g.fillRect(transpWidth, transpHeight, 10, 10);
+							transpWidth += 20;
+						}
+						
+						if (transpHeight%20 == 0) {
+							transpWidth = 10;
+						} else {
+							transpWidth = 0;
+						}
+						
+						transpHeight += 10;
+						
 					}
 					
-					g.drawImage(image, 0, 0, null);
+					int iw = image.getWidth(this);
+					int ih = image.getHeight(this);
+					int pw = this.getWidth();
+					int ph = this.getHeight();
+					
+					int startW = (pw - iw)/2;
+					int startH = (ph - ih)/2;
+					
+					g.drawImage(image, startW, startH, null);
 				
 				} else {
 				

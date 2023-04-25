@@ -1,5 +1,6 @@
 package dev.ArkNLA.pixelTiles;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -20,10 +21,11 @@ import javax.swing.JPanel;
 public class PanelDraw extends JPanel implements MouseListener, MouseMotionListener{
 
 	/*
-	 * 		4/24/2023
-	 * 		Known Bugs:		
+	 * 		4/25/2023
+	 * 		Known Bugs:		 	- Duplicate4S: doesn't work with mouse pressed
 	 * 		
-	 * 		TODO: 			- Get transparency working...
+	 * 		TODO: 				- Get transparency working.
+	 * 							- Move non-drawing in paint to methods where possible
 	 * 								
 	 */
 	
@@ -44,10 +46,23 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	private BufferedImage imageUserDrawn = null;
 	
 	/*
+	 * 		Draw Tools
+	 */
+	
+	boolean toolActive = false;
+	
+	boolean toolMirrorVS = false;
+	boolean toolMirrorHS = false;
+	boolean toolMirror4S = false;
+	boolean toolDuplicateVS = false;
+	boolean toolDuplicateHS = false;
+	boolean toolDuplicate4S = false;
+
+	/*
 	 * 		General use
 	 */
 	
-	Graphics2D g2;
+	Graphics2D g2, g2pane;
 	private int pX, pY, line, step, gridSize;
 	private int gridSizeCorrected = 0;
 	private Boolean boolClearImage = false;
@@ -130,39 +145,108 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		 * 	Draw filled rectangle within draw grid
 		 */
 		
-		// find grid square mouse cursor is in
-		
+    	
 		if (mousePressed || mouseClicked) {
 
-			int dx = 0;
-			int dy = 0;
+	    	Point p = findGridContainingMouse();
+			int dx = p.x;
+			int dy = p.y;
 			
-			// find x grid
-			for (int i = 0; i < gridSizeCorrected+step; i += step) {
-				
-				if (mouseLoc.x < i) {
-					dx = i - step;
-					break;
-				} else {
-					dx = gridSizeCorrected - step;
-				}
-			}
-			
-			// find y grid
-			for (int i = 0; i < gridSizeCorrected+step; i += step) {
-				
-				if (mouseLoc.y < i) {
-					dy = i - step;
-					break;
-				} else {
-					dy = gridSizeCorrected - step;
-				}
-			}
+
 			
 			g2.setColor(PixelTilesMain.userColor);
-			g2.fillRect(dx, dy, step, step);							
+			g2.fillRect(dx, dy, step, step);
 			
-			//System.out.println("dx: " + dx + " / dy: " + dy + " / step: " + step);
+			/*
+			 * 		Draw tools
+			 */
+			
+			//	Duplicate Vertical Split		***/*|***/*
+
+			if (toolDuplicateVS) {
+				if (mouseLoc.x < (gridSizeCorrected/2)) {
+					mouseLoc.x = (gridSizeCorrected/2) + mouseLoc.x;
+				} else {
+					mouseLoc.x = mouseLoc.x-(gridSizeCorrected/2);
+				}
+				p = findGridContainingMouse();
+				g2.fillRect(p.x, dy, step, step);
+			}
+
+			//	Duplicate Horizontal Split		***/******
+			//									----------
+			//                                  ***/******
+
+			if (toolDuplicateHS) {
+				if (mouseLoc.y < (gridSizeCorrected/2)) {
+					mouseLoc.y = (gridSizeCorrected/2) + mouseLoc.y;
+				} else {
+					mouseLoc.y = mouseLoc.y-(gridSizeCorrected/2);
+				}
+				p = findGridContainingMouse();
+				g2.fillRect(dx, p.y, step, step);
+			}
+			
+			//	Duplicate 4x Split				***/*|***/*
+			//                                  *****|*****
+			//									-----------
+			//	               					***/*|***/*
+			//                                  *****|*****
+
+			if (toolDuplicate4S) {
+				if (mouseLoc.x < (gridSizeCorrected/2)) {
+					mouseLoc.x = (gridSizeCorrected/2) + mouseLoc.x;
+				} else {
+					mouseLoc.x = mouseLoc.x-(gridSizeCorrected/2);
+				}
+				p = findGridContainingMouse();
+				g2.fillRect(p.x, dy, step, step);
+
+				if (mouseLoc.y < (gridSizeCorrected/2)) {
+					mouseLoc.y = (gridSizeCorrected/2) + mouseLoc.y;
+				} else {
+					mouseLoc.y = mouseLoc.y-(gridSizeCorrected/2);
+				}
+				p = findGridContainingMouse();
+				g2.fillRect(dx, p.y, step, step);
+
+			}
+			
+			//	Mirror Vertical Split			***/*|*\***
+
+			if (toolMirrorVS == true) {
+				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
+				p = findGridContainingMouse();
+				g2.fillRect(p.x, dy, step, step);
+			}
+
+			//	Mirror Horizontal Split			***/******
+			//									----------
+			//                                  ***\******
+
+			if (toolMirrorHS == true) {
+				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
+				p = findGridContainingMouse();
+				g2.fillRect(dx, p.y, step, step);
+			}
+
+			//	Mirror 4x Split					***/*|*\***
+			//                                  *****|*****
+			//									-----------
+			//	               					*****|*****
+			//                                  ***\*|*/***
+
+			if (toolMirror4S == true) {
+				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
+				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
+				p = findGridContainingMouse();
+				g2.fillRect(p.x, dy, step, step);
+				g2.fillRect(dx, p.y, step, step);
+
+				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
+				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
+				g2.fillRect(p.x, p.y, step, step);
+			}
 
 			mouseClicked = false;
 		}
@@ -201,7 +285,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		/*
 		 *  Draw grid lines over user image
 		 */
-						
+					
 		// Draw rows
 		line = step;
 		for(int i = 0; i < userGrid; i++) {
@@ -214,6 +298,25 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 		for(int i = 0; i < userGrid; i++) {
 			pane.drawLine(line, 0, line, gridSizeCorrected);
 			line += step;
+		}
+		
+		// Draw thicker split lines when toolActive is true
+		
+		g2pane = (Graphics2D) pane;
+		
+		if (toolActive) {			
+			g2pane.setStroke(new BasicStroke(5.0F));
+			
+			if (toolDuplicateVS || toolMirrorVS) {
+				g2pane.drawLine(gridSizeCorrected/2, 0, gridSizeCorrected/2, gridSizeCorrected);
+			}
+			if (toolDuplicateHS || toolMirrorHS) {
+				g2pane.drawLine(0, gridSizeCorrected/2, gridSizeCorrected, gridSizeCorrected/2);
+			}
+			if (toolDuplicate4S || toolMirror4S) {
+				g2pane.drawLine(0, gridSizeCorrected/2, gridSizeCorrected, gridSizeCorrected/2);
+				g2pane.drawLine(gridSizeCorrected/2, 0, gridSizeCorrected/2, gridSizeCorrected);
+			}
 		}
 
 	}
@@ -258,7 +361,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 			int g = (c>>8) & 0xff;
 			int b = c & 0xff;
 			
-			PixelTilesMain.paneColorSelect.setColorFromOutside(r, g, b, a);	
+			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
 		}
 		
 	}
@@ -362,5 +465,105 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 
 	public void clearImage() {
 		boolClearImage = true;
+	}
+	
+	private Point findGridContainingMouse() {
+		
+		int dx = 0;
+		int dy = 0;
+		
+		// find x grid
+		for (int i = 0; i < gridSizeCorrected+step; i += step) {
+			
+			if (mouseLoc.x < i) {
+				dx = i - step;
+				break;
+			} else {
+				dx = gridSizeCorrected - step;
+			}
+		}
+		
+		// find y grid
+		for (int i = 0; i < gridSizeCorrected+step; i += step) {
+			
+			if (mouseLoc.y < i) {
+				dy = i - step;
+				break;
+			} else {
+				dy = gridSizeCorrected - step;
+			}
+		}
+		
+		return new Point(dx, dy);
+	}
+	
+	public void setDrawTools(String tool) {
+		
+		switch(tool) {
+			case "mvs" : 
+				if (toolMirrorVS) {
+					toolMirrorVS = false;
+					toolActive = false;
+				} else {
+					toolMirrorVS = true;
+					toolActive = true;
+				}
+				break;
+			case "mhs" : 
+				if (toolMirrorHS) {
+					toolMirrorHS = false;
+					toolActive = false;
+				} else {
+					toolMirrorHS = true;
+					toolActive = true;
+				}
+				break;
+			case "m4s" : 
+				if (toolMirror4S) {
+					toolMirror4S = false;
+					toolActive = false;
+				} else {
+					toolMirror4S = true;
+					toolActive = true;
+				}
+				break;
+			case "dvs" : 
+				if (toolDuplicateVS) {
+					toolDuplicateVS = false;
+					toolActive = false;
+				} else {
+					toolDuplicateVS = true;
+					toolActive = true;
+				}
+				break;
+			case "dhs" : 
+				if (toolDuplicateHS) {
+					toolDuplicateHS = false;
+					toolActive = false;
+				} else {
+					toolDuplicateHS = true;
+					toolActive = true;
+				}
+				break;
+			case "d4s" : 
+				if (toolDuplicate4S) {
+					toolDuplicate4S = false;
+					toolActive = false;
+				} else {
+					toolDuplicate4S = true;
+					toolActive = true;
+				}
+				break;
+		}
+	}
+	
+	public void disableAllDrawTools() {
+		toolActive = false;
+		toolMirrorVS = false;
+		toolMirrorHS = false;
+		toolMirror4S = false;
+		toolDuplicateVS = false;
+		toolDuplicateHS = false;
+		toolDuplicate4S = false;
 	}
 }
