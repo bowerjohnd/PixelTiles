@@ -1,7 +1,9 @@
 package dev.ArkNLA.pixelTiles;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +11,9 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,39 +39,43 @@ public class PanelDrawTools extends JPanel implements ActionListener{
 	// Draw Tools
 	String toolInUse = "";
 	
-	JPanel paneOther = new JPanel();
+	JPanel paneToolButtons = new JPanel();
 	JButton butClearImage = new JButton("Clear");
 
-	JPanel paneMirror = new JPanel();
-	JButton butMirrorVS = new JButton(new ImageIcon("mvs-button.png"));
-	JButton butMirrorHS = new JButton(new ImageIcon("mhs-button.png"));
-	JButton butMirror4S = new JButton(new ImageIcon("m4s-button.png"));
+	JButton butMirrorVS = new JButton(new ImageIcon("resources/mvs-button.png"));
+	JButton butMirrorHS = new JButton(new ImageIcon("resources/mhs-button.png"));
+	JButton butMirror4S = new JButton(new ImageIcon("resources/m4s-button.png"));
 
-	JPanel paneDuplicate = new JPanel();
-	JButton butDuplicateVS = new JButton(new ImageIcon("dvs-button.png"));
-	JButton butDuplicateHS = new JButton(new ImageIcon("dhs-button.png"));
-	JButton butDuplicate4S = new JButton(new ImageIcon("d4s-button.png"));
+	JButton butDuplicateVS = new JButton(new ImageIcon("resources/dvs-button.png"));
+	JButton butDuplicateHS = new JButton(new ImageIcon("resources/dhs-button.png"));
+	JButton butDuplicate4S = new JButton(new ImageIcon("resources/d4s-button.png"));
 	
 	ArrayList<String> tips = new ArrayList<String>();
 	
 	PanelDrawTools() {
 		
-		butClearImage.addActionListener(this);
-		paneOther.add(butClearImage);
+		paneToolButtons.setLayout(new GridLayout(3,3));
 		
+		paneToolButtons.add(new JLabel(""));
+		
+		butClearImage.addActionListener(this);
+		paneToolButtons.add(butClearImage);
+		
+		paneToolButtons.add(new JLabel(""));
+
 		butMirrorVS.addActionListener(this);
 		butMirrorHS.addActionListener(this);
 		butMirror4S.addActionListener(this);
-		paneMirror.add(butMirrorVS);
-		paneMirror.add(butMirrorHS);
-		paneMirror.add(butMirror4S);
+		paneToolButtons.add(butMirrorVS);
+		paneToolButtons.add(butMirrorHS);
+		paneToolButtons.add(butMirror4S);
 
 		butDuplicateVS.addActionListener(this);
 		butDuplicateHS.addActionListener(this);
 		butDuplicate4S.addActionListener(this);
-		paneDuplicate.add(butDuplicateVS);
-		paneDuplicate.add(butDuplicateHS);
-		paneDuplicate.add(butDuplicate4S);
+		paneToolButtons.add(butDuplicateVS);
+		paneToolButtons.add(butDuplicateHS);
+		paneToolButtons.add(butDuplicate4S);
 
 		tips.add("Right-Click on a color in the drawing area to select that color.");
 		tips.add("Set custom paint grid to 1 to wash entire image in one color.");
@@ -94,9 +100,7 @@ public class PanelDrawTools extends JPanel implements ActionListener{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		add(paneOther);
-		add(paneMirror);
-		add(paneDuplicate);
+		add(paneToolButtons);
 		add(scrollPane);
 	}
 	
@@ -107,41 +111,41 @@ public class PanelDrawTools extends JPanel implements ActionListener{
 		
 		if (source == butClearImage) {
 			// Clear image button, sets draw panel boolean to true
-			PixelTilesMain.paneDraw.clearImage();
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.clearImage();
+			PixelTilesMain.paneDrawTile.repaint();
 			PanelTools.panePreview.repaint();
 		}
 		
 		if (source == butMirrorVS) {
 			disableConflictingDrawTools("mvs");
-			PixelTilesMain.paneDraw.setDrawTools("mvs");
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.setDrawTools("mvs");
+			PixelTilesMain.paneDrawTile.repaint();
 		}
 		if (source == butMirrorHS) {
 			disableConflictingDrawTools("mhs");
-			PixelTilesMain.paneDraw.setDrawTools("mhs");
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.setDrawTools("mhs");
+			PixelTilesMain.paneDrawTile.repaint();
 		}
 		if (source == butMirror4S) {
 			disableConflictingDrawTools("m4s");
-			PixelTilesMain.paneDraw.setDrawTools("m4s");
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.setDrawTools("m4s");
+			PixelTilesMain.paneDrawTile.repaint();
 		}
 
 		if (source == butDuplicateVS) {
 			disableConflictingDrawTools("dvs");
-			PixelTilesMain.paneDraw.setDrawTools("dvs");
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.setDrawTools("dvs");
+			PixelTilesMain.paneDrawTile.repaint();
 		}
 		if (source == butDuplicateHS) {
 			disableConflictingDrawTools("dhs");
-			PixelTilesMain.paneDraw.setDrawTools("dhs");
-			PixelTilesMain.paneDraw.repaint();
+			PixelTilesMain.paneDrawTile.setDrawTools("dhs");
+			PixelTilesMain.paneDrawTile.repaint();
 		}
 		if (source == butDuplicate4S) {
 			disableConflictingDrawTools("d4s");
-			PixelTilesMain.paneDraw.setDrawTools("d4s");
-			PixelTilesMain.paneDraw.repaint();			
+			PixelTilesMain.paneDrawTile.setDrawTools("d4s");
+			PixelTilesMain.paneDrawTile.repaint();			
 		}
 	}
 	

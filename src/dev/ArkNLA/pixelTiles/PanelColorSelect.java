@@ -617,7 +617,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 							+ Integer.toHexString(intBlue) + Integer.toHexString(intOpacity));
 		}
 	
-	public void setColorToFavorite() {
+	public void setColorFromMain() {
 		intRed = PixelTilesMain.userColor.getRed();
 		intGreen = PixelTilesMain.userColor.getGreen();
 		intBlue = PixelTilesMain.userColor.getBlue();
@@ -677,7 +677,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		intBlue = b;
 		intOpacity = a;
 		
-		setDrawColor();
 		setSlidersAndTexts();
+		setDrawColor();
 	}
 }

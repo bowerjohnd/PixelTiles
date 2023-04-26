@@ -7,15 +7,14 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 public class PixelTilesMain implements ActionListener {
 	
@@ -57,20 +56,21 @@ public class PixelTilesMain implements ActionListener {
 	// Tab panels
 	
 	JPanel tabPaneTileFactory = new JPanel();
-	JPanel tabPaneFavoriteColors = new JPanel();
+	JPanel tabPaneColorFactory = new JPanel();
+	JPanel tabPaneImageFactory = new JPanel();
+	JPanel tabPaneCollageFactory = new JPanel();
 	
 	// Tile Factory components
 	
 	JPanel paneTitleBar = new JPanel();									// TileFactory Border layout NORTH
 	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// TileFactory Border layout WEST
-	static PanelDraw paneDraw = new PanelDraw();						// TileFactory Border layout CENTER
+	static PanelDrawTile paneDrawTile = new PanelDrawTile();			// TileFactory Border layout CENTER
 	PanelTools paneTools = new PanelTools();							// TileFactory Border layout EAST
 	PanelGridSelect paneSizeSelect = new PanelGridSelect();				// TileFactory Border layout SOUTH
 	
 	// GUI components
 	
 	JLabel labelTitle = new JLabel("Pixel Tiles by John Bower");
-	JButton buttonExit = new JButton("Exit");
 	
 	// User selections
 	
@@ -94,12 +94,9 @@ public class PixelTilesMain implements ActionListener {
 		paneTitleBar.setLayout(new BorderLayout());
 		
 		labelTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		buttonExit.setHorizontalAlignment(SwingConstants.RIGHT);
-		buttonExit.addActionListener(this);
 		
 		paneTitleBar.setBackground(Color.LIGHT_GRAY);
 		paneTitleBar.add(labelTitle, BorderLayout.CENTER);
-		paneTitleBar.add(buttonExit, BorderLayout.EAST);
 				
 		frame.add(paneTitleBar, BorderLayout.NORTH);
 		
@@ -108,28 +105,45 @@ public class PixelTilesMain implements ActionListener {
 		*/
 		tabPaneTileFactory.setLayout(new BorderLayout());
 		
-		tabPaneTileFactory.add(paneColorSelect, BorderLayout.WEST);
-		tabPaneTileFactory.add(paneDraw, BorderLayout.CENTER);
+		tabPaneTileFactory.add(new PanelColorSelect(), BorderLayout.WEST);
+		tabPaneTileFactory.add(paneDrawTile, BorderLayout.CENTER);
 		tabPaneTileFactory.add(paneTools, BorderLayout.EAST);
 		tabPaneTileFactory.add(paneSizeSelect, BorderLayout.SOUTH);
 		
 		/*
-		 *		Favorite Colors Tab
+		 *		 Color Factory Tab
 		 */
+		tabPaneColorFactory.setLayout(new BorderLayout());
 		
-		// Add tabs to tabbedPane
+		tabPaneColorFactory.add(new PanelColorSelect(), BorderLayout.WEST);
+		tabPaneColorFactory.add(new PanelFavoriteCatagories(), BorderLayout.CENTER);
 		
+		/*
+		 *		 Image Factory Tab
+		 */
+		tabPaneImageFactory.setLayout(new BorderLayout());
+		
+		tabPaneImageFactory.add(new PanelImageCatagories(), BorderLayout.CENTER);
+		
+		/*
+		 *		 Collage Factory Tab
+		 */
+		tabPaneCollageFactory.setLayout(new BorderLayout());
+
+		tabPaneCollageFactory.add(new PanelDrawCollage(), BorderLayout.CENTER);
+		
+		/*
+		 *		 Add tab panels to tabbedPane
+		 */
+
 		tabbedPane.addTab("Tile Factory", tabPaneTileFactory);
-		tabbedPane.addTab("Favorite Colors", tabPaneFavoriteColors);
-		
+		tabbedPane.addTab("Color Factory", tabPaneColorFactory);
+		tabbedPane.addTab("Image Factory", tabPaneImageFactory);
+		tabbedPane.addTab("Collage Factory", tabPaneCollageFactory);
+
 		// Frame properties
 
-		// Full screen option, not used
-		//frame.setBounds(0,0,screenWidth, screenHeight);
-		//frame.setUndecorated(true);		
-		//frame.setResizable(false);
-		//buttonExit.setVisible(true);
-		buttonExit.setVisible(false);
+		setLookAndFeel();
 		  
 		frame.add(tabbedPane, BorderLayout.CENTER);
 		
@@ -139,7 +153,9 @@ public class PixelTilesMain implements ActionListener {
 		frame.setMinimumSize(new Dimension(screenWidth/5*2, screenHeight/5*2));
 		frame.setResizable(true);			
 		frame.setVisible(true);
-
+		
+		ImageIcon icon = new ImageIcon(".//resources//icon.png");
+	    frame.setIconImage(icon.getImage());
 	}
 	
 	public static void main(String[] args) {
@@ -152,15 +168,25 @@ public class PixelTilesMain implements ActionListener {
 
 		Object source = e.getSource();
 		
-		if (source == buttonExit) exitProgram();
 		
-	}
-	
-	public void exitProgram() {
-		
-		// Wrap up exit
-		
-		System.exit(1);
 	}
 
+	public void setLookAndFeel() {
+		/*
+		OK default javax.swing.plaf.metal.MetalLookAndFeel
+		OK javax.swing.plaf.nimbus.NimbusLookAndFeel
+		NO com.sun.java.swing.plaf.motif.MotifLookAndFeel
+		OK com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+		OK com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel
+		 */
+	   try {
+
+	       UIManager.setLookAndFeel(
+	    		   "javax.swing.plaf.metal.MetalLookAndFeel"
+	    		   );
+	   }
+	   catch (Exception e) {
+	       System.out.println("Look and Feel not set");
+	   }
+	}
 }

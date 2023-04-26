@@ -91,7 +91,7 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 		}
 
 		PixelTilesMain.userGridSize = grid;
-    	PixelTilesMain.paneDraw.repaint();
+    	PixelTilesMain.paneDrawTile.repaint();
 
 	}
 
@@ -124,7 +124,7 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 			    	
 		    	PixelTilesMain.userGridSize = grid;
 			    	
-		    	PixelTilesMain.paneDraw.repaint();
+		    	PixelTilesMain.paneDrawTile.repaint();
 		    }
 
 			    labelCustomSize.setText(grid + "x" + grid);

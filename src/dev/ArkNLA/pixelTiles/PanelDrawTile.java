@@ -18,7 +18,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class PanelDraw extends JPanel implements MouseListener, MouseMotionListener{
+public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionListener{
 
 	/*
 	 * 		4/25/2023
@@ -69,7 +69,7 @@ public class PanelDraw extends JPanel implements MouseListener, MouseMotionListe
 	
 	int userGrid = 1;
 
-	PanelDraw() {
+	PanelDrawTile() {
 		
 		setLayout(new BorderLayout());
 		

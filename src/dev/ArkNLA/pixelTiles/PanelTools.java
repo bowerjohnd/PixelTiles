@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class PanelTools extends JPanel{
 
 	static PanelPreview panePreview = new PanelPreview();
+	JScrollPane scrollDrawTools;
 	PanelDrawTools paneDrawTools = new PanelDrawTools();
 	PanelSave paneSave = new PanelSave();
 	
@@ -19,8 +22,10 @@ public class PanelTools extends JPanel{
 		add(panePreview, BorderLayout.NORTH);
 		
 		// Possible feature with mirror splits, clear image, etc.
-		
-		add(paneDrawTools, BorderLayout.CENTER);
+		scrollDrawTools = new JScrollPane(paneDrawTools, 
+				   ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,  
+				   ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		add(scrollDrawTools, BorderLayout.CENTER);
 		
 		// paneTools.add(paneDrawTools, BorderLayout.CENTER);
 		
