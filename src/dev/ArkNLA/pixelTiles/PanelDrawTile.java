@@ -340,6 +340,7 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			int b = c & 0xff;
 			
 			PixelTilesMain.userColor = new Color(r, g, b, a);
+			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
 		}
 	}
 
@@ -360,7 +361,8 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			int r = (c>>16) & 0xff;
 			int g = (c>>8) & 0xff;
 			int b = c & 0xff;
-			
+
+			PixelTilesMain.userColor = new Color(r, g, b, a);
 			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
 		}
 		

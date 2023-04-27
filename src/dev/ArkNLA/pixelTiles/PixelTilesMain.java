@@ -105,7 +105,7 @@ public class PixelTilesMain implements ActionListener {
 		*/
 		tabPaneTileFactory.setLayout(new BorderLayout());
 		
-		tabPaneTileFactory.add(new PanelColorSelect(), BorderLayout.WEST);
+		tabPaneTileFactory.add(paneColorSelect, BorderLayout.WEST);
 		tabPaneTileFactory.add(paneDrawTile, BorderLayout.CENTER);
 		tabPaneTileFactory.add(paneTools, BorderLayout.EAST);
 		tabPaneTileFactory.add(paneSizeSelect, BorderLayout.SOUTH);
