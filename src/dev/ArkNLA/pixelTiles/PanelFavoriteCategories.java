@@ -3,9 +3,9 @@ package dev.ArkNLA.pixelTiles;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PanelFavoriteCatagories extends JPanel{
+public class PanelFavoriteCategories extends JPanel{
 	
-	PanelFavoriteCatagories() {
+	PanelFavoriteCategories() {
 		add(new JLabel("Coming Soon."));
 	}
 

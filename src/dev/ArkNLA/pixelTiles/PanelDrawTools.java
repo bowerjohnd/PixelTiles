@@ -80,6 +80,7 @@ public class PanelDrawTools extends JPanel implements ActionListener{
 		tips.add("Right-Click on a color in the drawing area to select that color.");
 		tips.add("Set custom paint grid to 1 to wash entire image in one color.");
 		tips.add("Minecraft blocks are 16x16 pixels drawn/saved.");
+		tips.add("Save image to highest paint grid used to avoid detail loss.");
 		
 		areaForTips.setMargin(new Insets(4,4,4,4));
 		areaForTips.setWrapStyleWord(true);

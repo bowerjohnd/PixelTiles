@@ -30,6 +30,7 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 	private final String[] options2 = {"5", "10", "20", "40"};
 	private final String[] options3 = {"8", "16", "32", "64"};
 	
+	JButton butOne = new JButton("1");
 	JComboBox<String> combo1 = new JComboBox<>(options1);
 	JComboBox<String> combo2 = new JComboBox<>(options2);
 	JComboBox<String> combo3 = new JComboBox<>(options3);
@@ -45,6 +46,7 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 		labelCustomSize = new JLabel(grid + "x" + grid);
 		textFieldCustom.addKeyListener(this);
 		
+		butOne.addActionListener(this);
 		combo1.addActionListener(this);
 		combo2.addActionListener(this);
 		combo3.addActionListener(this);
@@ -57,13 +59,14 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 		add(new JLabel(""), 0, 0);
 		add(new JLabel("Paint Grid:"), 0, 1);
 		add(new JLabel(""), 0, 2);
-		add(combo1, 0, 3);
-		add(combo2, 0, 4);
-		add(combo3, 0, 5);
-		add(new JLabel(""), 0, 6);
-		add(labelGridCustom, 0, 7);
-		add(textFieldCustom, 0, 8);
-		add(labelCustomSize, 0, 9);
+		add(butOne, 0,3);
+		add(combo1, 0, 4);
+		add(combo2, 0, 5);
+		add(combo3, 0, 6);
+		add(new JLabel(""), 0, 7);
+		add(labelGridCustom, 0, 8);
+		add(textFieldCustom, 0, 9);
+		add(labelCustomSize, 0, 10);
 		
 	}
 
@@ -71,6 +74,13 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 	public void actionPerformed(ActionEvent e) {
 		
 		Object source = e.getSource();
+		
+		
+		if (source == butOne) {
+			grid = 1;
+			textFieldCustom.setText("1");
+			labelCustomSize.setText(grid + "x" + grid);
+		}
 		
 		if (source == combo1) {
 			grid = Integer.valueOf((String)combo1.getSelectedItem());
@@ -123,7 +133,7 @@ public class PanelGridSelect extends JPanel implements ActionListener, KeyListen
 		    	}
 			    	
 		    	PixelTilesMain.userGridSize = grid;
-			    	
+		    	
 		    	PixelTilesMain.paneDrawTile.repaint();
 		    }
 

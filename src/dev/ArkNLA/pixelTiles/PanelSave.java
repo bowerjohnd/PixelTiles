@@ -30,7 +30,8 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 	 * 		4/24/2023
 	 * 		Known Bugs:		
 	 * 		
-	 * 		TODO: 			- Clean up code after revamp, if needed.
+	 * 		TODO: 			- Use PixelTIlesMain.userImageColorArray to draw
+	 * 							a fresh image to be saved.
 	 * 								
 	 */
 	
@@ -38,7 +39,7 @@ public class PanelSave extends JPanel implements ActionListener, KeyListener{
 	private JButton buttonSaveAs = new JButton("Save As");
 	private BufferedImage userImage;
 	
-	private int imageSize = 250;	
+	private int imageSize = PixelTilesMain.userGridSize;	
 	private JLabel labelImageSize;
 	private JTextField textImageSize = new JTextField(3);
 	

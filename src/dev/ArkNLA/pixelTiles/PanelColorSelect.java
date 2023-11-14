@@ -255,7 +255,7 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		labelBrightness.setHorizontalAlignment(SwingConstants.LEFT);
 		textBrightness = new JTextField(3);
 		textBrightness.addKeyListener(this);
-		slideBrightness = new JSlider(0, 255, 0);
+		slideBrightness = new JSlider(0, 255, 127);
 		slideBrightness.addChangeListener(this);
 		
 		c.gridy = 5;
@@ -324,13 +324,13 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		slideGreen.setValue(intGreen);
 		slideBlue.setValue(intBlue);
 		slideOpacity.setValue(intOpacity);
-		slideBrightness.setValue(10);
+		slideBrightness.setValue(127);
 		
 		textRed.setText(String.valueOf(intRed));
 		textGreen.setText(String.valueOf(intGreen));
 		textBlue.setText(String.valueOf(intBlue));
 		textOpacity.setText(String.valueOf(intOpacity));
-		textBrightness.setText(String.valueOf(10));
+		textBrightness.setText(String.valueOf(127));
 		
 		setSlidersAndTexts();
 		setDrawColor();

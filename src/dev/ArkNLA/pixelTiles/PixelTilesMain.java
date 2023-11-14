@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,7 +14,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-public class PixelTilesMain implements ActionListener {
+public class PixelTilesMain {
 	
 	/*
 	 * 		4/25/2023
@@ -62,11 +60,15 @@ public class PixelTilesMain implements ActionListener {
 	
 	// Tile Factory components
 	
-	JPanel paneTitleBar = new JPanel();									// TileFactory Border layout NORTH
-	static PanelColorSelect paneColorSelect = new PanelColorSelect();	// TileFactory Border layout WEST
-	static PanelDrawTile paneDrawTile = new PanelDrawTile();			// TileFactory Border layout CENTER
-	PanelTools paneTools = new PanelTools();							// TileFactory Border layout EAST
-	PanelGridSelect paneSizeSelect = new PanelGridSelect();				// TileFactory Border layout SOUTH
+	JPanel paneTitleBar = new JPanel();												// TileFactory Border layout NORTH
+	static PanelColorSelect paneColorSelectTileFactory = new PanelColorSelect();	// TileFactory Border layout WEST
+	static PanelDrawTile paneDrawTile = new PanelDrawTile();						// TileFactory Border layout CENTER
+	PanelTools paneTools = new PanelTools();										// TileFactory Border layout EAST
+	PanelGridSelect paneSizeSelect = new PanelGridSelect();							// TileFactory Border layout SOUTH
+	
+	// Color Factory components
+	
+	PanelColorSelect paneColorSelectColorFactory = new PanelColorSelect();			// ColorFactory Border layout WEST
 	
 	// GUI components
 	
@@ -74,9 +76,10 @@ public class PixelTilesMain implements ActionListener {
 	
 	// User selections
 	
-	public static int userGridSize = 1;
+	public static int userGridSize = 16;
 	public static Color userColor;
 	public static Image userImage;
+	public static int[][][] userImageColorArray;	// [X][Y][RGBA]
 	
 	PixelTilesMain() {
 		
@@ -105,7 +108,7 @@ public class PixelTilesMain implements ActionListener {
 		*/
 		tabPaneTileFactory.setLayout(new BorderLayout());
 		
-		tabPaneTileFactory.add(paneColorSelect, BorderLayout.WEST);
+		tabPaneTileFactory.add(paneColorSelectTileFactory, BorderLayout.WEST);
 		tabPaneTileFactory.add(paneDrawTile, BorderLayout.CENTER);
 		tabPaneTileFactory.add(paneTools, BorderLayout.EAST);
 		tabPaneTileFactory.add(paneSizeSelect, BorderLayout.SOUTH);
@@ -115,8 +118,8 @@ public class PixelTilesMain implements ActionListener {
 		 */
 		tabPaneColorFactory.setLayout(new BorderLayout());
 		
-		tabPaneColorFactory.add(new PanelColorSelect(), BorderLayout.WEST);
-		tabPaneColorFactory.add(new PanelFavoriteCatagories(), BorderLayout.CENTER);
+		tabPaneColorFactory.add(paneColorSelectColorFactory, BorderLayout.WEST);
+		tabPaneColorFactory.add(new PanelFavoriteCategories(), BorderLayout.CENTER);
 		
 		/*
 		 *		 Image Factory Tab
@@ -161,14 +164,6 @@ public class PixelTilesMain implements ActionListener {
 	public static void main(String[] args) {
 		
 		PixelTilesMain start = new PixelTilesMain();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		Object source = e.getSource();
-		
-		
 	}
 
 	public void setLookAndFeel() {

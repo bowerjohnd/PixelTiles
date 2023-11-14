@@ -91,8 +91,8 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		}
 
 		// Stops anomalies outside draw area
-		pane.setColor(Color.WHITE);
-		pane.fillRect(0, 0, this.getWidth(), this.getHeight());
+		//pane.setColor(Color.WHITE);
+		//pane.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		// Draw alternating white squares on background to indicate transparency
 		pane.setColor(Color.LIGHT_GRAY);
@@ -340,7 +340,7 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			int b = c & 0xff;
 			
 			PixelTilesMain.userColor = new Color(r, g, b, a);
-			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
+			PixelTilesMain.paneColorSelectTileFactory.setColor(r, g, b, a);	
 		}
 	}
 
@@ -363,7 +363,7 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			int b = c & 0xff;
 
 			PixelTilesMain.userColor = new Color(r, g, b, a);
-			PixelTilesMain.paneColorSelect.setColor(r, g, b, a);	
+			PixelTilesMain.paneColorSelectTileFactory.setColor(r, g, b, a);	
 		}
 		
 	}

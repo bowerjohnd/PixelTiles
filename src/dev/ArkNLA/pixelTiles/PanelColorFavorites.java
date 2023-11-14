@@ -67,7 +67,7 @@ public class PanelColorFavorites extends JPanel implements ActionListener{
 				}
 					
 				PixelTilesMain.userColor = new Color(r,g,b,o);
-				PixelTilesMain.paneColorSelect.setColorFromMain();
+				PixelTilesMain.paneColorSelectTileFactory.setColorFromMain();
 
 			}
 		}
