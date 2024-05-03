@@ -607,10 +607,12 @@ public class PanelColorSelect extends JPanel implements ActionListener, KeyListe
 		slideRed.setValue(intRed);
 		slideGreen.setValue(intGreen);
 		slideBlue.setValue(intBlue);
+		slideOpacity.setValue(intOpacity);
 		
 		textRed.setText(String.valueOf(intRed));
 		textGreen.setText(String.valueOf(intGreen));
 		textBlue.setText(String.valueOf(intBlue));
+		slideOpacity.setValue(intOpacity);
 		
 		textRGB.setText(intRed + ", " + intGreen + ", " + intBlue + ", " + intOpacity);
 		textHEX.setText("#" + Integer.toHexString(intRed) + Integer.toHexString(intGreen) 

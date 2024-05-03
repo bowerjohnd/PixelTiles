@@ -8,16 +8,27 @@ public class ColorArray{
 	int step;
 	
 	ColorArray() {
-		this.pixelCountWidth = 10;
-		this.pixelCountHeight = 10;
-		this.step = 50;
+		this.pixelCountWidth = 100;
+		this.pixelCountHeight = 100;
+		this.step = 1;
 		
 		userImageColorArray = new String[pixelCountWidth][pixelCountHeight];
 		
-		randomFillArray();
+		//randomFillArray();
 
 	}
 	
+	ColorArray(int imageX, int imageY) {
+		this.pixelCountWidth = imageX;
+		this.pixelCountHeight = imageY;
+		this.step = 1;
+		
+		userImageColorArray = new String[pixelCountWidth][pixelCountHeight];
+		
+		//randomFillArray();
+
+	}
+
 	ColorArray(int imageX, int imageY, int imageStep) {
 		
 		this.pixelCountWidth = imageX;
@@ -59,7 +70,12 @@ public class ColorArray{
 	}
 
 	public void setColorInArray(int x, int y, int r, int g, int b, int a) {
-		this.userImageColorArray[x][y] = r + "," + g + "," + b + "," + a;
+		
+		if (r == 0 && g == 0 && b == 0 && a == 0) {
+			this.userImageColorArray[x][y] = null;
+		} else {
+			this.userImageColorArray[x][y] = r + "," + g + "," + b + "," + a;
+		}
 	}
 
 	public int getPixelCountWidth() {

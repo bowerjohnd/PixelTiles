@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,7 +20,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionListener{
+public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionListener, ComponentListener{
 
 	/*
 	 * 		4/25/2023
@@ -66,6 +68,9 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 	private int pX, pY, line, step, gridSize;
 	private int gridSizeCorrected = 0;
 	private Boolean boolClearImage = false;
+	private int[] userColor = new int[4];
+	private int gridX = 0, gridY = 0;
+	private Point gridContainingMouse = new Point();
 	
 	int userGrid = 1;
 
@@ -76,6 +81,7 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		mouseLoc = new Point(0, 0);
 		addMouseMotionListener(this);
 		addMouseListener(this);
+		addComponentListener(this);
 		
 		setOpaque(false);
 		
@@ -84,6 +90,8 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 	
 	@Override
 	public void paint(Graphics pane) {
+		
+		setUserColor();
 		
 		if (boolClearImage == true) {
 			imageUserDrawn = null;
@@ -95,27 +103,28 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		//pane.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		// Draw alternating white squares on background to indicate transparency
-		pane.setColor(Color.LIGHT_GRAY);
 		
+		pane.setColor(Color.LIGHT_GRAY);
+
 		int transpWidth = 0;
 		int transpHeight = 0;
 
-		while (transpHeight < this.getHeight()) {
-			
-			while (transpWidth < this.getWidth()) {
+		while (transpHeight < gridSizeCorrected) {
+
+			while (transpWidth < gridSizeCorrected) {
 
 				pane.fillRect(transpWidth, transpHeight, 10, 10);
 				transpWidth += 20;
 			}
-			
+
 			if (transpHeight%20 == 0) {
 				transpWidth = 10;
 			} else {
 				transpWidth = 0;
 			}
-			
+
 			transpHeight += 10;
-			
+
 		}
 		
 		// Get panel size before painting in case of window resizing
@@ -127,13 +136,10 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		 */
 
     	if (imageUserDrawn == null) {
-    		try {
-				imageUserDrawn = ImageIO.read(new File("transparent-master.png"));
-			} catch (IOException e) {
-				imageUserDrawn = new BufferedImage(gridSizeCorrected, gridSizeCorrected, BufferedImage.TYPE_INT_ARGB);
-			}
+			imageUserDrawn = new BufferedImage(gridSizeCorrected, gridSizeCorrected, BufferedImage.TYPE_INT_ARGB);
+
         	g2 = (Graphics2D) imageUserDrawn.createGraphics();
-        	g2.setColor(Color.white);
+        	g2.setColor(new Color(0,0,0,0));
         	g2.fillRect(0, 0, gridSizeCorrected, gridSizeCorrected);
     	} else {
     		imageUserDrawn = (BufferedImage) getScaledImage(imageUserDrawn, gridSizeCorrected, gridSizeCorrected);
@@ -148,7 +154,9 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
     	
 		if (mousePressed || mouseClicked) {
 
-	    	Point p = findGridContainingMouse();
+			
+			findGridContainingMouse();
+	    	Point p = gridContainingMouse;
 			int dx = p.x;
 			int dy = p.y;
 			
@@ -156,7 +164,12 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			
 			g2.setColor(PixelTilesMain.userColor);
 			g2.fillRect(dx, dy, step, step);
+
+			pane.setColor(PixelTilesMain.userColor);
+			pane.fillRect(dx, dy, step, step);
+			PixelTilesMain.userImageColorArray.setColorInArray(gridX, gridY, userColor[0], userColor[1], userColor[2], userColor[3]);
 			
+
 			/*
 			 * 		Draw tools
 			 */
@@ -169,8 +182,13 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 				} else {
 					mouseLoc.x = mouseLoc.x-(gridSizeCorrected/2);
 				}
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(p.x, dy, step, step);
+
+				pane.fillRect(p.x, dy, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(p.x, dy, userColor[0], userColor[1], userColor[2], userColor[3]);
+			
 			}
 
 			//	Duplicate Horizontal Split		***/******
@@ -183,8 +201,13 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 				} else {
 					mouseLoc.y = mouseLoc.y-(gridSizeCorrected/2);
 				}
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(dx, p.y, step, step);
+
+				pane.fillRect(dx, p.y, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(dx, p.y, userColor[0], userColor[1], userColor[2], userColor[3]);
+
 			}
 			
 			//	Duplicate 4x Split				***/*|***/*
@@ -199,25 +222,38 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 				} else {
 					mouseLoc.x = mouseLoc.x-(gridSizeCorrected/2);
 				}
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(p.x, dy, step, step);
+
+				pane.fillRect(p.x, dy, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(p.x, dy, userColor[0], userColor[1], userColor[2], userColor[3]);
 
 				if (mouseLoc.y < (gridSizeCorrected/2)) {
 					mouseLoc.y = (gridSizeCorrected/2) + mouseLoc.y;
 				} else {
 					mouseLoc.y = mouseLoc.y-(gridSizeCorrected/2);
 				}
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(dx, p.y, step, step);
-
+				
+				pane.fillRect(dx, p.y, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(dx, p.y, userColor[0], userColor[1], userColor[2], userColor[3]);
+				
 			}
 			
 			//	Mirror Vertical Split			***/*|*\***
 
 			if (toolMirrorVS == true) {
 				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(p.x, dy, step, step);
+
+				pane.fillRect(p.x, dy, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(p.x, dy, userColor[0], userColor[1], userColor[2], userColor[3]);
+
 			}
 
 			//	Mirror Horizontal Split			***/******
@@ -226,8 +262,13 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 
 			if (toolMirrorHS == true) {
 				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
-				p = findGridContainingMouse();
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
 				g2.fillRect(dx, p.y, step, step);
+
+				pane.fillRect(dx, p.y, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(dx, p.y, userColor[0], userColor[1], userColor[2], userColor[3]);
+
 			}
 
 			//	Mirror 4x Split					***/*|*\***
@@ -239,13 +280,24 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			if (toolMirror4S == true) {
 				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
 				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
-				p = findGridContainingMouse();
-				g2.fillRect(p.x, dy, step, step);
+
+				findGridContainingMouse();
+		    	p = gridContainingMouse;
+
+		    	g2.fillRect(p.x, dy, step, step);
 				g2.fillRect(dx, p.y, step, step);
+				
+				pane.fillRect(p.x, dy, step, step);
+				pane.fillRect(dx, p.y, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(p.x, dy, userColor[0], userColor[1], userColor[2], userColor[3]);
+				PixelTilesMain.userImageColorArray.setColorInArray(dx, p.y, userColor[0], userColor[1], userColor[2], userColor[3]);
 
 				mouseLoc.x = gridSizeCorrected-mouseLoc.x;
 				mouseLoc.y = gridSizeCorrected-mouseLoc.y;
 				g2.fillRect(p.x, p.y, step, step);
+				
+				pane.fillRect(p.x, p.y, step, step);
+				PixelTilesMain.userImageColorArray.setColorInArray(p.x, p.y, userColor[0], userColor[1], userColor[2], userColor[3]);
 			}
 
 			mouseClicked = false;
@@ -272,8 +324,29 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		pane.setColor(Color.LIGHT_GRAY);
 		*/
 		
-		pane.drawImage(imageUserDrawn, 0, 0, gridSizeCorrected, gridSizeCorrected, this);
+		//pane.drawImage(imageUserDrawn, 0, 0, gridSizeCorrected, gridSizeCorrected, this);
 
+		
+		/*
+		 * 			Paint array onto jpanel
+		 */
+		
+		for (int i=0; i<100; i++) {
+			for (int j=0; j<100; j++) {
+				if (PixelTilesMain.userImageColorArray.getColorInArray(i, j) != null) {
+					String[] temp = PixelTilesMain.userImageColorArray.getColorInArray(i, j).split(",");
+					
+					int r = Integer.parseInt(temp[0]);
+					int g = Integer.parseInt(temp[1]);
+					int b = Integer.parseInt(temp[2]);
+					int a = Integer.parseInt(temp[3]);
+					
+					pane.setColor(new Color(r,g,b,a));
+					pane.fillRect(i*step, j*step, step, step);
+				}
+
+			}
+		}
 		
 		
 		/*
@@ -285,6 +358,8 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		/*
 		 *  Draw grid lines over user image
 		 */
+		
+		pane.setColor(Color.BLACK);
 					
 		// Draw rows
 		line = step;
@@ -331,13 +406,33 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		}
 		
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			int x = e.getX();
-			int y = e.getY();
-			int c = imageUserDrawn.getRGB(x, y);
-			int a = (c>>24) & 0xff;
-			int r = (c>>16) & 0xff;
-			int g = (c>>8) & 0xff;
-			int b = c & 0xff;
+//			int x = e.getX();
+//			int y = e.getY();
+//			int c = imageUserDrawn.getRGB(x, y);
+//			int a = (c>>24) & 0xff;
+//			int r = (c>>16) & 0xff;
+//			int g = (c>>8) & 0xff;
+//			int b = c & 0xff;
+			int r = 0, g = 0, b = 0, a = 0;
+			findGridContainingMouse();
+			
+			try {
+				String[] temp = PixelTilesMain.userImageColorArray.getColorInArray(gridX,gridY).split(",");
+				r = Integer.parseInt(temp[0]);
+				g = Integer.parseInt(temp[1]);
+				b = Integer.parseInt(temp[2]);
+				a = Integer.parseInt(temp[3]);
+			} catch (NullPointerException ne) {
+				r = 0;
+				g = 0;
+				b = 0;
+				a = 0;				
+			} catch (Exception ex) {
+				r = 0;
+				g = 0;
+				b = 0;
+				a = 255;
+			}
 			
 			PixelTilesMain.userColor = new Color(r, g, b, a);
 			PixelTilesMain.paneColorSelectTileFactory.setColor(r, g, b, a);	
@@ -354,13 +449,34 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		}
 		
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			int x = e.getX();
-			int y = e.getY();
-			int c = imageUserDrawn.getRGB(x, y);
-			int a = (c>>24) & 0xff;
-			int r = (c>>16) & 0xff;
-			int g = (c>>8) & 0xff;
-			int b = c & 0xff;
+			
+//			int x = e.getX();
+//			int y = e.getY();
+//			int c = imageUserDrawn.getRGB(x, y);
+//			int a = (c>>24) & 0xff;
+//			int r = (c>>16) & 0xff;
+//			int g = (c>>8) & 0xff;
+//			int b = c & 0xff;
+			int r = 0, g = 0, b = 0, a = 0;
+			findGridContainingMouse();
+
+			try {
+				String[] temp = PixelTilesMain.userImageColorArray.getColorInArray(gridX,gridY).split(",");
+				r = Integer.parseInt(temp[0]);
+				g = Integer.parseInt(temp[1]);
+				b = Integer.parseInt(temp[2]);
+				a = Integer.parseInt(temp[3]);
+			} catch (NullPointerException ne) {
+				r = 0;
+				g = 0;
+				b = 0;
+				a = 0;				
+			} catch (Exception ex) {
+				r = 0;
+				g = 0;
+				b = 0;
+				a = 255;
+			}
 
 			PixelTilesMain.userColor = new Color(r, g, b, a);
 			PixelTilesMain.paneColorSelectTileFactory.setColor(r, g, b, a);	
@@ -416,7 +532,7 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		
 		mouseLoc.x = x;
 		mouseLoc.y = y;
-		repaint();
+		//repaint();
 
 	}
 	
@@ -466,16 +582,29 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 	}
 
 	public void clearImage() {
+		
+		for (int i=0; i<100; i++) {
+			for (int j=0; j<100; j++) {
+				
+				PixelTilesMain.userImageColorArray.setColorInArray(i, j, 255, 255, 255, 0);
+
+			}
+		}
+		
 		boolClearImage = true;
 	}
 	
-	private Point findGridContainingMouse() {
+	private void findGridContainingMouse() {
 		
 		int dx = 0;
 		int dy = 0;
+		int countX = 0;
+		int countY = 0;
 		
 		// find x grid
 		for (int i = 0; i < gridSizeCorrected+step; i += step) {
+			
+			countX++;
 			
 			if (mouseLoc.x < i) {
 				dx = i - step;
@@ -488,6 +617,8 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		// find y grid
 		for (int i = 0; i < gridSizeCorrected+step; i += step) {
 			
+			countY++;
+			
 			if (mouseLoc.y < i) {
 				dy = i - step;
 				break;
@@ -496,7 +627,19 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 			}
 		}
 		
-		return new Point(dx, dy);
+		if (countX-2 < 0) {
+			this.gridX = 0;
+		} else {		
+			this.gridX = countX-2;
+		}
+		
+		if (countY-2 < 0) {
+			this.gridY = 0;
+		} else {
+			this.gridY = countY-2;
+		}
+		
+		gridContainingMouse = new Point(dx, dy);
 	}
 	
 	public void setDrawTools(String tool) {
@@ -559,6 +702,13 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		}
 	}
 	
+	private void setUserColor() {
+		userColor[0] = PixelTilesMain.userColor.getRed();
+		userColor[1] = PixelTilesMain.userColor.getGreen();
+		userColor[2] = PixelTilesMain.userColor.getBlue();
+		userColor[3] = PixelTilesMain.userColor.getAlpha();
+	}
+	
 	public void disableAllDrawTools() {
 		toolActive = false;
 		toolMirrorVS = false;
@@ -567,5 +717,29 @@ public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionL
 		toolDuplicateVS = false;
 		toolDuplicateHS = false;
 		toolDuplicate4S = false;
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		repaint();
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		repaint();
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

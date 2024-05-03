@@ -79,7 +79,7 @@ public class PixelTilesMain {
 	public static int userGridSize = 16;
 	public static Color userColor;
 	public static Image userImage;
-	public static int[][][] userImageColorArray;	// [X][Y][RGBA]
+	public static ColorArray userImageColorArray = new ColorArray();	// [X][Y][RGBA]
 	
 	PixelTilesMain() {
 		

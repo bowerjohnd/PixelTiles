@@ -34,7 +34,7 @@ public class PanelPreview extends JPanel implements ChangeListener{
 	
 		paneImage = new JPanel()
 		{
-			public void paint (Graphics g) {
+			public void paint (Graphics paneg) {
 								
 				Image image = PixelTilesMain.userImage;
 
@@ -44,10 +44,10 @@ public class PanelPreview extends JPanel implements ChangeListener{
 					
 					// Paint squares behind image preview to show transparency
 					
-					g.setColor(Color.WHITE);
-					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+					paneg.setColor(Color.WHITE);
+					paneg.fillRect(0, 0, this.getWidth(), this.getHeight());
 					
-					g.setColor(Color.LIGHT_GRAY);
+					paneg.setColor(Color.LIGHT_GRAY);
 					
 					int transpWidth = 0;
 					int transpHeight = 0;
@@ -56,7 +56,7 @@ public class PanelPreview extends JPanel implements ChangeListener{
 						
 						while (transpWidth < this.getWidth()) {
 
-							g.fillRect(transpWidth, transpHeight, 10, 10);
+							paneg.fillRect(transpWidth, transpHeight, 10, 10);
 							transpWidth += 20;
 						}
 						
@@ -78,18 +78,37 @@ public class PanelPreview extends JPanel implements ChangeListener{
 					int startW = (pw - iw)/2;
 					int startH = (ph - ih)/2;
 					
-					g.drawImage(image, startW, startH, null);
-				
+					//paneg.drawImage(image, startW, startH, null);
+					
+					int step = 1;
+							
+					for (int i=0; i<100; i++) {
+						for (int j=0; j<100; j++) {
+							if (PixelTilesMain.userImageColorArray.getColorInArray(i, j) != null) {
+								String[] temp = PixelTilesMain.userImageColorArray.getColorInArray(i, j).split(",");
+								
+								int r = Integer.parseInt(temp[0]);
+								int g = Integer.parseInt(temp[1]);
+								int b = Integer.parseInt(temp[2]);
+								int a = Integer.parseInt(temp[3]);
+								
+								paneg.setColor(new Color(r,g,b,a));
+								paneg.fillRect(i*step, j*step, step, step);
+							}
+
+						}
+					}
+					
 				} else {
 				
-					g.setColor(Color.BLACK);
-					g.fillRect(0, 0, 125, 125);
-					g.setColor(Color.RED);
-					g.fillRect(125, 0, 125, 125);
-					g.setColor(Color.BLUE);
-					g.fillRect(0, 125, 125, 125);
-					g.setColor(Color.GREEN);
-					g.fillRect(125, 125, 125, 125);
+					paneg.setColor(Color.BLACK);
+					paneg.fillRect(0, 0, 125, 125);
+					paneg.setColor(Color.RED);
+					paneg.fillRect(125, 0, 125, 125);
+					paneg.setColor(Color.BLUE);
+					paneg.fillRect(0, 125, 125, 125);
+					paneg.setColor(Color.GREEN);
+					paneg.fillRect(125, 125, 125, 125);
 					
 				}
 				
