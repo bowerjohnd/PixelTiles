@@ -17,7 +17,7 @@ import javax.swing.UIManager;
 public class PixelTilesMain {
 	
 	/*
-	 * 		4/25/2023
+	 * 		5/9/2024		*reverted to original working version after color array difficulties*
 	 * 		Known Bugs:		- Problems with duplication
 	 * 		
 	 * 		TODO: 			- get transparency working
