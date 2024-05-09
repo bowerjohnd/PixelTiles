@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 public class PanelDrawTile extends JPanel implements MouseListener, MouseMotionListener{
 
 	/*
+	 * 
+	 * 		5/9/2024		*reverted to original working version after color array difficulties*
 	 * 		4/25/2023
 	 * 		Known Bugs:		 	- Duplicate4S: doesn't work with mouse pressed
 	 * 		

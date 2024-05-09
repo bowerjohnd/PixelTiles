@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 public class PanelPreview extends JPanel implements ChangeListener{
 	
 	/*
+	 * 		5/9/2024		*reverted to original working version after color array difficulties*
 	 * 		4/4/2023
 	 * 		Known Bugs:		-
 	 * 		

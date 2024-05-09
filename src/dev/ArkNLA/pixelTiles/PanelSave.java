@@ -27,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class PanelSave extends JPanel implements ActionListener, KeyListener{
 
 	/*
+	 * 		5/9/2024		*reverted to original working version after color array difficulties*
 	 * 		4/24/2023
 	 * 		Known Bugs:		
 	 * 		
